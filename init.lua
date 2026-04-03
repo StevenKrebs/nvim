@@ -498,8 +498,8 @@ vim.keymap.set("n",          "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>",       
 -- Copilot
 vim.g.copilot_no_tab_map = true
 
--- Accept full suggestion (falls back to inserting a space if no suggestion)
-vim.keymap.set("i", "<Space>", 'copilot#Accept(" ")', { expr = true, replace_keycodes = false, desc = "Copilot accept or space" })
+-- Accept full suggestion (falls back to normal Enter if no suggestion)
+vim.keymap.set("i", "<CR>", 'copilot#Accept("<CR>")', { expr = true, replace_keycodes = false, desc = "Copilot accept or enter" })
 
 vim.keymap.set("i", "<Tab>",   "<Plug>(copilot-next)",         { desc = "Copilot next suggestion" })
 vim.keymap.set("i", "<S-Tab>", "<Plug>(copilot-previous)",     { desc = "Copilot prev suggestion" })
