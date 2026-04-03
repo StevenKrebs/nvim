@@ -420,6 +420,7 @@ require("conform").setup({
     toml       = { "taplo" },
     c          = { "clang_format" },
     cpp        = { "clang_format" },
+    zig        = { "zigfmt" },
     ruby       = { "rubocop" },
     perl       = { "perltidy" },
   },

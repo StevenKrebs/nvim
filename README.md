@@ -43,7 +43,7 @@ Formatters and linters are only needed for the languages you use. Install the re
 | PHP               | —              | —            | `intelephense`                                                     |
 | SQL               | —              | —            | `sqls`                                                             |
 | Java              | —              | —            | `jdtls`                                                            |
-| Zig               | —              | —            | `zls`                                                              |
+| Zig               | `zig fmt`      | —            | `zls`                                                              |
 | Dockerfile        | —              | —            | `dockerfile-language-server`                                       |
 
 ## Installation
