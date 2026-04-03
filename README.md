@@ -22,28 +22,29 @@ I personally use [ghostty](https://ghostty.org) as my terminal emulator of choic
 
 ### LSP
 
+LSP servers have to be installed manually (I personally use nix for that btw).
 Formatters and linters are only needed for the languages you use. Install the relevant ones on your `PATH`:
 
-| Language              | Formatter      | Linter       | LSP                                                                |
-| --------------------- | -------------- | ------------ | ------------------------------------------------------------------ |
-| Nix                   | `nixfmt`       | `statix`     | `nixd`                                                             |
-| Python                | `ruff`         | `ruff`       | `basedpyright`                                                     |
-| Lua                   | `stylua`       | —            | `lua-language-server`                                              |
-| Shell                 | `shfmt`        | `shellcheck` | —                                                                  |
-| Rust                  | —              | —            | `rust-analyzer`                                                    |
-| Go                    | —              | —            | `gopls`                                                            |
-| JS/TS                 | `prettier`     | —            | `typescript-language-server`                                       |
-| JSON/YAML/HTML/MD     | `prettier`     | —            | `vscode-langservers-extracted`, `yaml-language-server`, `marksman` |
-| CSS / Tailwind        | `prettier`     | —            | `vscode-langservers-extracted`, `tailwindcss`                      |
-| TOML                  | `taplo`        | —            | `taplo`                                                            |
-| C/C++                 | `clang-format` | —            | `clangd`                                                           |
-| Ruby                  | `rubocop`      | `rubocop`    | `ruby-lsp`                                                         |
-| Perl                  | `perltidy`     | `perlcritic` | `perlls`                                                           |
-| PHP                   | —              | —            | `intelephense`                                                     |
-| SQL                   | —              | —            | `sqls`                                                             |
-| Java                  | —              | —            | `jdtls`                                                            |
-| Zig                   | —              | —            | `zls`                                                              |
-| Dockerfile            | —              | —            | `dockerfile-language-server`                                       |
+| Language          | Formatter      | Linter       | LSP                                                                |
+| ----------------- | -------------- | ------------ | ------------------------------------------------------------------ |
+| Nix               | `nixfmt`       | `statix`     | `nixd`                                                             |
+| Python            | `ruff`         | `ruff`       | `basedpyright`                                                     |
+| Lua               | `stylua`       | —            | `lua-language-server`                                              |
+| Shell             | `shfmt`        | `shellcheck` | —                                                                  |
+| Rust              | —              | —            | `rust-analyzer`                                                    |
+| Go                | —              | —            | `gopls`                                                            |
+| JS/TS             | `prettier`     | —            | `typescript-language-server`                                       |
+| JSON/YAML/HTML/MD | `prettier`     | —            | `vscode-langservers-extracted`, `yaml-language-server`, `marksman` |
+| CSS / Tailwind    | `prettier`     | —            | `vscode-langservers-extracted`, `tailwindcss`                      |
+| TOML              | `taplo`        | —            | `taplo`                                                            |
+| C/C++             | `clang-format` | —            | `clangd`                                                           |
+| Ruby              | `rubocop`      | `rubocop`    | `ruby-lsp`                                                         |
+| Perl              | `perltidy`     | `perlcritic` | `perlls`                                                           |
+| PHP               | —              | —            | `intelephense`                                                     |
+| SQL               | —              | —            | `sqls`                                                             |
+| Java              | —              | —            | `jdtls`                                                            |
+| Zig               | —              | —            | `zls`                                                              |
+| Dockerfile        | —              | —            | `dockerfile-language-server`                                       |
 
 ## Installation
 
@@ -85,15 +86,15 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 
 ### Find (`<leader>f`)
 
-| Key                                                                                           | Action        |
-| --------------------------------------------------------------------------------------------- | ------------- |
-| `<leader>ff`                                                                                  | Find files    |
-| `<leader>fg`                                                                                  | Grep          |
-| `<leader>fb`                                                                                  | Buffers       |
-| `<leader>fr`                                                                                  | Recent files  |
-| `<leader>fh`                                                                                  | Help          |
-| `<leader>fd`                                                                                  | Diagnostics   |
-| `<leader>e`                                                                                   | File explorer |
+| Key          | Action        |
+| ------------ | ------------- |
+| `<leader>ff` | Find files    |
+| `<leader>fg` | Grep          |
+| `<leader>fb` | Buffers       |
+| `<leader>fr` | Recent files  |
+| `<leader>fh` | Help          |
+| `<leader>fd` | Diagnostics   |
+| `<leader>e`  | File explorer |
 
 ### Git (`<leader>g`)
 
