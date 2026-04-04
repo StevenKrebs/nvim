@@ -53,6 +53,8 @@ vim.pack.add({
   { src = "https://github.com/folke/which-key.nvim",                          name = "which-key" },
   { src = "https://github.com/folke/todo-comments.nvim",                      name = "todo-comments" },
   { src = "https://github.com/folke/trouble.nvim",                            name = "trouble" },
+  { src = "https://github.com/folke/noice.nvim",                              name = "noice" },
+  { src = "https://github.com/MunifTanjim/nui.nvim",                          name = "nui" },
 })
 
 -- Built-in optional packages
@@ -144,8 +146,6 @@ require("snacks").setup({
     },
   },
 })
-
-vim.keymap.set("n", "<leader>snh", function() Snacks.notifier.show_history() end, { desc = "Notification history" })
 
 vim.keymap.set("n", "<leader>e",  function() Snacks.picker.explorer()    end, { desc = "File explorer" })
 vim.keymap.set("n", "<leader>ff", function() Snacks.picker.files()       end, { desc = "Find files" })
@@ -318,23 +318,6 @@ vim.api.nvim_create_user_command("PackUpdate", function()
   vim.pack.update()
   vim.notify("All plugins updated!", vim.log.levels.INFO)
 end, { desc = "Update all plugins" })
-
--- Scroll floating windows (hover, signature, etc.)
-local function scroll_float(delta)
-  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    if vim.api.nvim_win_get_config(win).zindex then
-      local buf = vim.api.nvim_win_get_buf(win)
-      local line_count = vim.api.nvim_buf_line_count(buf)
-      local cursor = vim.api.nvim_win_get_cursor(win)
-      local new_line = math.max(1, math.min(line_count, cursor[1] + delta))
-      vim.api.nvim_win_set_cursor(win, { new_line, cursor[2] })
-      return true
-    end
-  end
-  return false
-end
-vim.keymap.set({"n","i","s"}, "<c-f>", function() if not scroll_float(4)  then return "<c-f>" end end, { silent = true, expr = true, desc = "Scroll float forward" })
-vim.keymap.set({"n","i","s"}, "<c-b>", function() if not scroll_float(-4) then return "<c-b>" end end, { silent = true, expr = true, desc = "Scroll float backward" })
 
 -- NOTE: ── LSP ───────────────────────────────────────────────────────────────────────
 
@@ -732,13 +715,10 @@ require("lualine").setup({
   options = {
     theme = "auto",
     globalstatus = true,
-    disabled_filetypes = {
-      statusline = { "dashboard", "snacks_dashboard" },
-    },
   },
   sections = {
     lualine_a = { "mode" },
-    lualine_b = { { "branch", icon = "\xEF\x90\x98 " } }, -- U+F418 git branch
+    lualine_b = { { "branch", icon = "\xEF\x90\x98 " } },
     lualine_c = {
       { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
       { "filename", path = 1, symbols = { modified = "  ", readonly = "  " } },
@@ -766,6 +746,47 @@ require("lualine").setup({
   extensions = { "fzf" },
 })
 
+-- Noice
+require("noice").setup({
+  lsp = {
+    hover = {
+      enabled = false,
+    },
+  },
+  routes = {
+    {
+      filter = {
+        event = "msg_show",
+        any = {
+          { find = "%d+L, %d+B" },
+          { find = "; after #%d+" },
+          { find = "; before #%d+" },
+        },
+      },
+      view = "mini",
+    },
+  },
+  presets = {
+    bottom_search = true,
+    command_palette = true,
+    long_message_to_split = true,
+  },
+})
+
+vim.keymap.set("n", "<leader>sn",  "",                                                      { desc = "+noice" })
+vim.keymap.set("n", "<leader>snl", function() require("noice").cmd("last") end,             { desc = "Last message" })
+vim.keymap.set("n", "<leader>snh", function() require("noice").cmd("history") end,          { desc = "History" })
+vim.keymap.set("n", "<leader>sna", function() require("noice").cmd("all") end,              { desc = "All" })
+vim.keymap.set("n", "<leader>snd", function() require("noice").cmd("dismiss") end,          { desc = "Dismiss all" })
+vim.keymap.set("c", "<S-Enter>",   function() require("noice").redirect(vim.fn.getcmdline()) end, { desc = "Redirect cmdline" })
+
+vim.keymap.set({ "i", "n", "s" }, "<c-f>", function()
+  if not require("noice.lsp").scroll(4) then return "<c-f>" end
+end, { silent = true, expr = true, desc = "Scroll forward" })
+
+vim.keymap.set({ "i", "n", "s" }, "<c-b>", function()
+  if not require("noice.lsp").scroll(-4) then return "<c-b>" end
+end, { silent = true, expr = true, desc = "Scroll backward" })
 
 -- Illuminate
 local function set_illuminate_hl()

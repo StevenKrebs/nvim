@@ -73,6 +73,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 - **Git** — gitsigns, fugitive, lazygit, and Snacks git pickers
 - **DAP** — JS/TS debugging with sourcemap support via nvim-dap + vscode-js-debug (`<leader>d`)
 - **Session persistence** — auto-save/restore via persistence.nvim
+- **Enhanced UI** — noice.nvim for cleaner cmdline and messages; Snacks dashboard with hidden statusline
 - **Kanagawa colorscheme** — wave variant with transparent background
 - **which-key** — press `?` in any buffer to browse available keymaps
 
@@ -80,7 +81,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 
 | Category   | Plugin                                                                                                 |
 | ---------- | ------------------------------------------------------------------------------------------------------ |
-| UI         | kanagawa.nvim, bufferline.nvim, lualine.nvim, which-key.nvim, render-markdown.nvim                     |
+| UI         | kanagawa.nvim, bufferline.nvim, lualine.nvim, noice.nvim, which-key.nvim, render-markdown.nvim        |
 | Navigation | snacks.nvim (picker, dashboard, lazygit, notifier, indent), flash.nvim, nvim-navic                     |
 | LSP        | nvim-lspconfig, conform.nvim, nvim-lint                                                                |
 | Syntax     | nvim-treesitter, nvim-treesitter-textobjects                                                           |
@@ -171,6 +172,16 @@ Requires `js-debug` (`vscode-js-debug`) on PATH. Sourcemaps are enabled — stac
 | `<leader>xx`                | Toggle all diagnostics   |
 | `<leader>xX`                | Buffer diagnostics       |
 | `<leader>xL` / `<leader>xQ` | Location / quickfix list |
+
+### Messages (`<leader>sn`)
+
+| Key                         | Action                   |
+| --------------------------- | ------------------------ |
+| `<leader>snl`               | Last message             |
+| `<leader>snh`               | Message history          |
+| `<leader>sna`               | All messages             |
+| `<leader>snd`               | Dismiss all messages     |
+| `<C-f>` / `<C-b>`           | Scroll hover doc forward / backward |
 
 ### Motion
 
