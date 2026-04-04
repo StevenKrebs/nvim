@@ -47,8 +47,6 @@ vim.pack.add({
   { src = "https://github.com/akinsho/bufferline.nvim",                       name = "bufferline" },
   { src = "https://github.com/nvim-lualine/lualine.nvim",                     name = "lualine" },
   { src = "https://github.com/SmiteshP/nvim-navic",                           name = "navic" },
-  { src = "https://github.com/MunifTanjim/nui.nvim",                          name = "nui" },
-  { src = "https://github.com/folke/noice.nvim",                              name = "noice" },
   { src = "https://github.com/RRethy/vim-illuminate",                         name = "illuminate" },
   { src = "https://github.com/MeanderingProgrammer/render-markdown.nvim",     name = "render-markdown" },
   { src = "https://github.com/folke/flash.nvim",                              name = "flash" },
@@ -86,7 +84,8 @@ require("mini.ai").setup()
 -- NOTE: ── snacks ────────────────────────────────────────────────────────────────────
 
 require("snacks").setup({
-  indent = { enabled = true },
+  indent   = { enabled = true },
+  notifier = { enabled = true },
   dashboard = {
     sections = {
       { section = "header" },
@@ -145,6 +144,8 @@ require("snacks").setup({
     },
   },
 })
+
+vim.keymap.set("n", "<leader>snh", function() Snacks.notifier.show_history() end, { desc = "Notification history" })
 
 vim.keymap.set("n", "<leader>e",  function() Snacks.picker.explorer()    end, { desc = "File explorer" })
 vim.keymap.set("n", "<leader>ff", function() Snacks.picker.files()       end, { desc = "Find files" })
@@ -318,7 +319,45 @@ vim.api.nvim_create_user_command("PackUpdate", function()
   vim.notify("All plugins updated!", vim.log.levels.INFO)
 end, { desc = "Update all plugins" })
 
+-- Scroll floating windows (hover, signature, etc.)
+local function scroll_float(delta)
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if vim.api.nvim_win_get_config(win).zindex then
+      local buf = vim.api.nvim_win_get_buf(win)
+      local line_count = vim.api.nvim_buf_line_count(buf)
+      local cursor = vim.api.nvim_win_get_cursor(win)
+      local new_line = math.max(1, math.min(line_count, cursor[1] + delta))
+      vim.api.nvim_win_set_cursor(win, { new_line, cursor[2] })
+      return true
+    end
+  end
+  return false
+end
+vim.keymap.set({"n","i","s"}, "<c-f>", function() if not scroll_float(4)  then return "<c-f>" end end, { silent = true, expr = true, desc = "Scroll float forward" })
+vim.keymap.set({"n","i","s"}, "<c-b>", function() if not scroll_float(-4) then return "<c-b>" end end, { silent = true, expr = true, desc = "Scroll float backward" })
+
 -- NOTE: ── LSP ───────────────────────────────────────────────────────────────────────
+
+local function lsp_complete() return vim.tbl_map(function(c) return c.name end, vim.lsp.get_clients({ bufnr = 0 })) end
+
+vim.api.nvim_create_user_command("LspStop", function(opts)
+  local name = opts.args ~= "" and opts.args or nil
+  for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0, name = name })) do
+    client:stop()
+  end
+end, { nargs = "?", complete = lsp_complete, desc = "Stop LSP client(s)" })
+
+vim.api.nvim_create_user_command("LspStart", function()
+  vim.api.nvim_exec_autocmds("FileType", { buffer = 0 })
+end, { desc = "Start LSP client(s) for current buffer" })
+
+vim.api.nvim_create_user_command("LspRestart", function(opts)
+  local name = opts.args ~= "" and opts.args or nil
+  for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0, name = name })) do
+    client:stop()
+  end
+  vim.defer_fn(function() vim.api.nvim_exec_autocmds("FileType", { buffer = 0 }) end, 500)
+end, { nargs = "?", complete = lsp_complete, desc = "Restart LSP client(s)" })
 
 -- nvim-lspconfig provides default cmd, filetypes, and root_markers for all servers
 vim.lsp.config("*", {
@@ -366,9 +405,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, opts)
     vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count =  1 }) end, opts)
 
-    -- Inlay hints (nixd advertises support but delegates to clangd internally,
-    -- which rejects the URI format and emits -32602 errors)
-    if client and client:supports_method("textDocument/inlayHint") and client.name ~= "nixd" then
+    if client and client:supports_method("textDocument/inlayHint") then
       vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
     end
 
@@ -724,48 +761,6 @@ require("lualine").setup({
   extensions = { "fzf" },
 })
 
--- Noice
-require("noice").setup({
-  lsp = {
-    override = {
-      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-      ["vim.lsp.util.stylize_markdown"] = true,
-    },
-  },
-  routes = {
-    {
-      filter = {
-        event = "msg_show",
-        any = {
-          { find = "%d+L, %d+B" },
-          { find = "; after #%d+" },
-          { find = "; before #%d+" },
-        },
-      },
-      view = "mini",
-    },
-  },
-  presets = {
-    bottom_search = true,
-    command_palette = true,
-    long_message_to_split = true,
-  },
-})
-
-vim.keymap.set("n", "<leader>sn",  "",                                                      { desc = "+noice" })
-vim.keymap.set("n", "<leader>snl", function() require("noice").cmd("last") end,             { desc = "Last message" })
-vim.keymap.set("n", "<leader>snh", function() require("noice").cmd("history") end,          { desc = "History" })
-vim.keymap.set("n", "<leader>sna", function() require("noice").cmd("all") end,              { desc = "All" })
-vim.keymap.set("n", "<leader>snd", function() require("noice").cmd("dismiss") end,          { desc = "Dismiss all" })
-vim.keymap.set("c", "<S-Enter>",   function() require("noice").redirect(vim.fn.getcmdline()) end, { desc = "Redirect cmdline" })
-
-vim.keymap.set({ "i", "n", "s" }, "<c-f>", function()
-  if not require("noice.lsp").scroll(4) then return "<c-f>" end
-end, { silent = true, expr = true, desc = "Scroll forward" })
-
-vim.keymap.set({ "i", "n", "s" }, "<c-b>", function()
-  if not require("noice.lsp").scroll(-4) then return "<c-b>" end
-end, { silent = true, expr = true, desc = "Scroll backward" })
 
 -- Illuminate
 local function set_illuminate_hl()
