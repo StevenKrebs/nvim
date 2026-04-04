@@ -668,7 +668,12 @@ vim.cmd.colorscheme("kanagawa-wave")
 
 vim.api.nvim_create_autocmd("VimEnter", {
   once = true,
-  callback = function() vim.cmd("silent! KanagawaCompile") end,
+  callback = function()
+    local _notify = vim.notify
+    vim.notify = function(msg, ...) if msg ~= "Kanagawa: compiled successfully!" then _notify(msg, ...) end end
+    vim.cmd("KanagawaCompile")
+    vim.notify = _notify
+  end,
 })
 
 -- Bufferline
