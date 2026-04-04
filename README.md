@@ -1,7 +1,7 @@
-# nvim
+# One-File Neovim Config
 
 With the release of nvim v.0.12 I decided to explore what it means to run a custom nvim config instead of my usual reliance on community distributions.
-This repo is the outcome of my efforts.
+This repo is the outcome of my efforts. A single init.lua that manages everything, heavily inspired by [LazyVim](https://www.lazyvim.org/).
 
 ## Requirements
 
@@ -46,13 +46,15 @@ Formatters and linters are only needed for the languages you use. Install the re
 | Zig               | `zig fmt`      | —            | `zls`                                                              |
 | Dockerfile        | —              | —            | `dockerfile-language-server`                                       |
 
+Specific configuration options (e.g. inlay hints, hover actions) are set in the respective server config files in `lsp/` (e.g. `lsp/basedpyright.lua`).
+
 ### DAP
 
 Debug adapters are only needed for the languages you want to debug. Install the relevant ones on your `PATH`:
 
-| Language   | Adapter                 |
-| ---------- | ----------------------- |
-| JS / TS    | `js-debug` (`vscode-js-debug`) |
+| Language | Adapter                        |
+| -------- | ------------------------------ |
+| JS / TS  | `js-debug` (`vscode-js-debug`) |
 
 ## Installation
 
@@ -81,7 +83,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 
 | Category   | Plugin                                                                                                 |
 | ---------- | ------------------------------------------------------------------------------------------------------ |
-| UI         | kanagawa.nvim, bufferline.nvim, lualine.nvim, noice.nvim, which-key.nvim, render-markdown.nvim        |
+| UI         | kanagawa.nvim, bufferline.nvim, lualine.nvim, noice.nvim, which-key.nvim, render-markdown.nvim         |
 | Navigation | snacks.nvim (picker, dashboard, lazygit, notifier, indent), flash.nvim, nvim-navic                     |
 | LSP        | nvim-lspconfig, conform.nvim, nvim-lint                                                                |
 | Syntax     | nvim-treesitter, nvim-treesitter-textobjects                                                           |
@@ -90,7 +92,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | Debug      | nvim-dap, nvim-dap-ui, nvim-dap-virtual-text, nvim-nio                                                 |
 | Editing    | mini.nvim (icons, pairs, surround, ai), Comment.nvim, vim-illuminate, todo-comments.nvim, trouble.nvim |
 | Sessions   | persistence.nvim                                                                                       |
-| Built-in   | nvim.undotree, nvim.difftool                                                                            |
+| Built-in   | nvim.undotree, nvim.difftool                                                                           |
 
 ## Key Bindings
 
@@ -146,22 +148,22 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 
 Requires `js-debug` (`vscode-js-debug`) on PATH. Sourcemaps are enabled — stack frames show `.ts` source paths, not compiled `.js`. The UI opens and closes automatically with the session.
 
-| Key          | Action               |
-| ------------ | -------------------- |
-| `<leader>db` | Toggle breakpoint    |
+| Key          | Action                 |
+| ------------ | ---------------------- |
+| `<leader>db` | Toggle breakpoint      |
 | `<leader>dB` | Conditional breakpoint |
-| `<leader>dc` | Continue             |
-| `<leader>di` | Step into            |
-| `<leader>do` | Step over            |
-| `<leader>dO` | Step out             |
-| `<leader>dq` | Terminate            |
-| `<leader>du` | Toggle UI            |
-| `<leader>de` | Eval expression      |
-| `<leader>dr` | REPL toggle          |
-| `<leader>dl` | Run last             |
-| `<F5>`       | Continue             |
-| `<F10>`      | Step over            |
-| `<F11>`      | Step into            |
+| `<leader>dc` | Continue               |
+| `<leader>di` | Step into              |
+| `<leader>do` | Step over              |
+| `<leader>dO` | Step out               |
+| `<leader>dq` | Terminate              |
+| `<leader>du` | Toggle UI              |
+| `<leader>de` | Eval expression        |
+| `<leader>dr` | REPL toggle            |
+| `<leader>dl` | Run last               |
+| `<F5>`       | Continue               |
+| `<F10>`      | Step over              |
+| `<F11>`      | Step into              |
 
 **Adapter configs (JS/TS):** Launch file (Node), Attach (Node), Launch Chrome (`http://localhost:3000`).
 
@@ -175,13 +177,13 @@ Requires `js-debug` (`vscode-js-debug`) on PATH. Sourcemaps are enabled — stac
 
 ### Messages (`<leader>sn`)
 
-| Key                         | Action                   |
-| --------------------------- | ------------------------ |
-| `<leader>snl`               | Last message             |
-| `<leader>snh`               | Message history          |
-| `<leader>sna`               | All messages             |
-| `<leader>snd`               | Dismiss all messages     |
-| `<C-f>` / `<C-b>`           | Scroll hover doc forward / backward |
+| Key               | Action                              |
+| ----------------- | ----------------------------------- |
+| `<leader>snl`     | Last message                        |
+| `<leader>snh`     | Message history                     |
+| `<leader>sna`     | All messages                        |
+| `<leader>snd`     | Dismiss all messages                |
+| `<C-f>` / `<C-b>` | Scroll hover doc forward / backward |
 
 ### Motion
 
