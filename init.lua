@@ -36,6 +36,12 @@ vim.pack.add({
   { src = "https://github.com/tpope/vim-fugitive",      name = "fugitive" },
   { src = "https://github.com/folke/persistence.nvim",  name = "persistence" },
 
+  -- Debug
+  { src = "https://github.com/mfussenegger/nvim-dap",          name = "nvim-dap" },
+  { src = "https://github.com/nvim-neotest/nvim-nio",           name = "nvim-nio" },
+  { src = "https://github.com/rcarriga/nvim-dap-ui",            name = "nvim-dap-ui" },
+  { src = "https://github.com/theHamsta/nvim-dap-virtual-text", name = "nvim-dap-virtual-text" },
+
   -- UI
   { src = "https://github.com/rebelot/kanagawa.nvim",                         name = "kanagawa" },
   { src = "https://github.com/akinsho/bufferline.nvim",                       name = "bufferline" },
@@ -794,11 +800,88 @@ vim.keymap.set("o",               "r",     function() require("flash").remote() 
 vim.keymap.set({ "o", "x" },      "R",     function() require("flash").treesitter_search() end, { desc = "Flash treesitter search" })
 vim.keymap.set("c",               "<C-s>", function() require("flash").toggle() end,             { desc = "Flash toggle search" })
 
+-- NOTE: ── DAP ───────────────────────────────────────────────────────────────────────
+
+local dap    = require("dap")
+local dapui  = require("dapui")
+
+-- vscode-js-debug adapter (installed via Nix as `js-debug`)
+local js_debug = vim.fn.exepath("js-debug")
+
+dap.adapters["pwa-node"] = {
+  type = "server",
+  host = "localhost",
+  port = "${port}",
+  executable = { command = js_debug, args = { "${port}" } },
+}
+dap.adapters["pwa-chrome"] = {
+  type = "server",
+  host = "localhost",
+  port = "${port}",
+  executable = { command = js_debug, args = { "${port}" } },
+}
+
+for _, lang in ipairs({ "javascript", "typescript", "javascriptreact", "typescriptreact" }) do
+  dap.configurations[lang] = {
+    {
+      type    = "pwa-node",
+      request = "launch",
+      name    = "Launch file (Node)",
+      program = "${file}",
+      cwd     = "${workspaceFolder}",
+      sourceMaps = true,
+      resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
+    },
+    {
+      type      = "pwa-node",
+      request   = "attach",
+      name      = "Attach (Node)",
+      processId = require("dap.utils").pick_process,
+      cwd       = "${workspaceFolder}",
+      sourceMaps = true,
+    },
+    {
+      type    = "pwa-chrome",
+      request = "launch",
+      name    = "Launch Chrome",
+      url     = "http://localhost:3000",
+      webRoot = "${workspaceFolder}",
+      sourceMaps = true,
+    },
+  }
+end
+
+-- Auto-open/close UI with debug session
+dapui.setup()
+dap.listeners.before.attach.dapui_config           = function() dapui.open() end
+dap.listeners.before.launch.dapui_config           = function() dapui.open() end
+dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
+dap.listeners.before.event_exited.dapui_config     = function() dapui.close() end
+
+-- Inline variable values while stepping
+require("nvim-dap-virtual-text").setup()
+
+vim.keymap.set("n",        "<leader>db", function() dap.toggle_breakpoint() end,                         { desc = "Toggle breakpoint" })
+vim.keymap.set("n",        "<leader>dB", function() dap.set_breakpoint(vim.fn.input("Condition: ")) end, { desc = "Conditional breakpoint" })
+vim.keymap.set("n",        "<leader>dc", function() dap.continue() end,                                  { desc = "Continue" })
+vim.keymap.set("n",        "<leader>di", function() dap.step_into() end,                                 { desc = "Step into" })
+vim.keymap.set("n",        "<leader>do", function() dap.step_over() end,                                 { desc = "Step over" })
+vim.keymap.set("n",        "<leader>dO", function() dap.step_out() end,                                  { desc = "Step out" })
+vim.keymap.set("n",        "<leader>dr", function() dap.repl.toggle() end,                               { desc = "REPL toggle" })
+vim.keymap.set("n",        "<leader>dl", function() dap.run_last() end,                                  { desc = "Run last" })
+vim.keymap.set("n",        "<leader>dq", function() dap.terminate() end,                                 { desc = "Terminate" })
+vim.keymap.set("n",        "<leader>du", function() dapui.toggle() end,                                  { desc = "Toggle UI" })
+vim.keymap.set({ "n", "v" }, "<leader>de", function() dapui.eval() end,                                  { desc = "Eval expression" })
+vim.keymap.set("n", "<F5>",  function() dap.continue() end,   { desc = "DAP continue" })
+vim.keymap.set("n", "<F10>", function() dap.step_over() end,  { desc = "DAP step over" })
+vim.keymap.set("n", "<F11>", function() dap.step_into() end,  { desc = "DAP step into" })
+
 -- Which-key
 require("which-key").setup({
   preset = "helix",
   spec = {
     { "<leader>a",  group = "ai",          mode = { "n", "v" } },
+    { "<leader>d",  group = "debug",       mode = { "n", "v" } },
     { "<leader>b",  group = "buffer",      mode = { "n", "v" } },
     { "<leader>c",  group = "code",        mode = { "n", "v" } },
     { "<leader>f",  group = "file/find",   mode = { "n", "v" } },

@@ -46,6 +46,14 @@ Formatters and linters are only needed for the languages you use. Install the re
 | Zig               | `zig fmt`      | —            | `zls`                                                              |
 | Dockerfile        | —              | —            | `dockerfile-language-server`                                       |
 
+### DAP
+
+Debug adapters are only needed for the languages you want to debug. Install the relevant ones on your `PATH`:
+
+| Language   | Adapter                 |
+| ---------- | ----------------------- |
+| JS / TS    | `js-debug` (`vscode-js-debug`) |
+
 ## Installation
 
 ```bash
@@ -63,6 +71,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 - **Auto-format on save** — via conform.nvim, per filetype
 - **Treesitter** — syntax highlighting and text objects for 23 languages
 - **Git** — gitsigns, fugitive, lazygit, and Snacks git pickers
+- **DAP** — JS/TS debugging with sourcemap support via nvim-dap + vscode-js-debug (`<leader>d`)
 - **Session persistence** — auto-save/restore via persistence.nvim
 - **Kanagawa colorscheme** — wave variant with transparent background
 - **which-key** — press `?` in any buffer to browse available keymaps
@@ -77,6 +86,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | Syntax     | nvim-treesitter, nvim-treesitter-textobjects                                                           |
 | Git        | gitsigns.nvim, vim-fugitive                                                                            |
 | AI         | claudecode.nvim, copilot.vim                                                                           |
+| Debug      | nvim-dap, nvim-dap-ui, nvim-dap-virtual-text, nvim-nio                                                 |
 | Editing    | mini.nvim (icons, pairs, surround, ai), Comment.nvim, vim-illuminate, todo-comments.nvim, trouble.nvim |
 | Sessions   | persistence.nvim                                                                                       |
 
@@ -129,6 +139,29 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | `gi`         | Implementation         |
 | `K`          | Hover docs             |
 | `[d` / `]d`  | Prev / next diagnostic |
+
+### Debug (`<leader>d`)
+
+Requires `js-debug` (`vscode-js-debug`) on PATH. Sourcemaps are enabled — stack frames show `.ts` source paths, not compiled `.js`. The UI opens and closes automatically with the session.
+
+| Key          | Action               |
+| ------------ | -------------------- |
+| `<leader>db` | Toggle breakpoint    |
+| `<leader>dB` | Conditional breakpoint |
+| `<leader>dc` | Continue             |
+| `<leader>di` | Step into            |
+| `<leader>do` | Step over            |
+| `<leader>dO` | Step out             |
+| `<leader>dq` | Terminate            |
+| `<leader>du` | Toggle UI            |
+| `<leader>de` | Eval expression      |
+| `<leader>dr` | REPL toggle          |
+| `<leader>dl` | Run last             |
+| `<F5>`       | Continue             |
+| `<F10>`      | Step over            |
+| `<F11>`      | Step into            |
+
+**Adapter configs (JS/TS):** Launch file (Node), Attach (Node), Launch Chrome (`http://localhost:3000`).
 
 ### Diagnostics (`<leader>x`)
 
