@@ -525,6 +525,11 @@ vim.keymap.set("n",          "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>",       
 
 -- Copilot
 vim.g.copilot_no_tab_map = true
+vim.g.copilot_filetypes = {
+  markdown = false,
+  gitcommit = false,
+  text = false,
+}
 
 -- Accept full suggestion (falls back to normal Enter if no suggestion)
 vim.keymap.set("i", "<CR>", 'copilot#Accept("<CR>")', { expr = true, replace_keycodes = false, desc = "Copilot accept or enter" })
@@ -532,7 +537,14 @@ vim.keymap.set("i", "<CR>", 'copilot#Accept("<CR>")', { expr = true, replace_key
 vim.keymap.set("i", "<Tab>",   "<Plug>(copilot-next)",         { desc = "Copilot next suggestion" })
 vim.keymap.set("i", "<S-Tab>", "<Plug>(copilot-previous)",     { desc = "Copilot prev suggestion" })
 vim.keymap.set("i", "<M-w>",   "<Plug>(copilot-accept-word)",  { desc = "Copilot accept word" })
+vim.keymap.set("i", "<M-l>",   "<Plug>(copilot-accept-line)",  { desc = "Copilot accept line" })
 vim.keymap.set("i", "<M-e>",   "<Plug>(copilot-dismiss)",      { desc = "Copilot dismiss" })
+vim.keymap.set("n", "<leader>ap", "<cmd>Copilot panel<CR>",     { desc = "Copilot panel" })
+vim.keymap.set("n", "<leader>at", function()
+  local enabled = vim.b.copilot_enabled
+  vim.b.copilot_enabled = (enabled == false) and true or false
+  vim.notify("Copilot " .. (vim.b.copilot_enabled == false and "disabled" or "enabled"))
+end, { desc = "Toggle copilot" })
 
 -- Git (Snacks)
 if vim.fn.executable("lazygit") == 1 then
@@ -735,6 +747,13 @@ require("lualine").setup({
             return { added = gs.added, modified = gs.changed, removed = gs.removed }
           end
         end,
+      },
+      {
+        function()
+          local status = vim.fn["copilot#Enabled"]()
+          return status == 1 and " " or " off"
+        end,
+        color = { fg = "#957fb8" },
       },
     },
     lualine_y = {

@@ -68,7 +68,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 ## Features
 
 - **Built-in plugin manager** — `vim.pack` with a lockfile (`nvim-pack-lock.json`) for reproducible installs
-- **AI integration** — Claude Code (`<leader>a`) and GitHub Copilot (Enter to accept)
+- **AI integration** — Claude Code (`<leader>a`) and GitHub Copilot (granular acceptance: word/line/full, panel view, per-buffer toggle)
 - **Full LSP** — 20 language servers, inlay hints, built-in completion, breadcrumb navigation
 - **Auto-format on save** — via conform.nvim, per filetype
 - **Treesitter** — syntax highlighting and text objects for 23 languages
@@ -123,6 +123,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 
 ### AI (`<leader>a`)
 
+#### Claude Code
 | Key                         | Action                    |
 | --------------------------- | ------------------------- |
 | `<leader>ac`                | Toggle Claude             |
@@ -130,7 +131,22 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | `<leader>ab`                | Add current buffer        |
 | `<leader>as`                | Send selection            |
 | `<leader>aa` / `<leader>ad` | Accept / deny diff        |
-| `Enter` (insert)            | Accept Copilot suggestion |
+
+#### Copilot (Insert Mode)
+| Key        | Action                    |
+| ---------- | ------------------------- |
+| `<CR>`     | Accept full suggestion    |
+| `<Tab>`    | Next suggestion           |
+| `<S-Tab>`  | Previous suggestion       |
+| `<M-w>`    | Accept word               |
+| `<M-l>`    | Accept line               |
+| `<M-e>`    | Dismiss suggestion        |
+
+#### Copilot (Normal Mode)
+| Key          | Action                    |
+| ------------ | ------------------------- |
+| `<leader>ap` | Open Copilot panel        |
+| `<leader>at` | Toggle Copilot on/off     |
 
 ### Code (`<leader>c` / LSP)
 
@@ -199,3 +215,12 @@ Requires `js-debug` (`vscode-js-debug`) on PATH. Sourcemaps are enabled — stac
 LSP server settings live in `lsp/` as individual files (e.g. `lsp/basedpyright.lua`). Add a new file and reference it in the `lspconfig` setup block in `init.lua` to configure an additional server.
 
 Formatter and linter mappings are in the `conform.nvim` and `nvim-lint` setup blocks in `init.lua`.
+
+## Copilot Notes
+
+Copilot provides inline code suggestions in insert mode. It is **disabled** in:
+- Markdown (where Claude Code is more useful for writing)
+- Git commit messages
+- Plain text files
+
+The statusline shows a Copilot icon (right side, kanagawa purple) indicating whether Copilot is active for the current buffer.
