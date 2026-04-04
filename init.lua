@@ -751,7 +751,7 @@ require("lualine").setup({
       {
         function()
           local status = vim.fn["copilot#Enabled"]()
-          return status == 1 and " " or " off"
+          return status == 1 and "" or "\xEF\x84\x93 off"
         end,
         color = { fg = "#957fb8" },
       },
