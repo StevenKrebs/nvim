@@ -80,8 +80,8 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 
 | Category   | Plugin                                                                                                 |
 | ---------- | ------------------------------------------------------------------------------------------------------ |
-| UI         | kanagawa.nvim, bufferline.nvim, lualine.nvim, noice.nvim, which-key.nvim, render-markdown.nvim         |
-| Navigation | snacks.nvim (picker, dashboard, lazygit), flash.nvim, nvim-navic                                       |
+| UI         | kanagawa.nvim, bufferline.nvim, lualine.nvim, which-key.nvim, render-markdown.nvim                     |
+| Navigation | snacks.nvim (picker, dashboard, lazygit, notifier, indent), flash.nvim, nvim-navic                     |
 | LSP        | nvim-lspconfig, conform.nvim, nvim-lint                                                                |
 | Syntax     | nvim-treesitter, nvim-treesitter-textobjects                                                           |
 | Git        | gitsigns.nvim, vim-fugitive                                                                            |
@@ -89,6 +89,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | Debug      | nvim-dap, nvim-dap-ui, nvim-dap-virtual-text, nvim-nio                                                 |
 | Editing    | mini.nvim (icons, pairs, surround, ai), Comment.nvim, vim-illuminate, todo-comments.nvim, trouble.nvim |
 | Sessions   | persistence.nvim                                                                                       |
+| Built-in   | nvim.undotree, nvim.difftool                                                                            |
 
 ## Key Bindings
 
