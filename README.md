@@ -7,12 +7,11 @@ This repo is the outcome of my efforts. A single init.lua that manages everythin
 
 | Dependency                                                                    | Purpose                                 |
 | ----------------------------------------------------------------------------- | --------------------------------------- |
-| [Neovim](https://neovim.io/) ≥ 0.12                                           | Uses `vim.pack` API                     |
-| [ripgrep](https://github.com/BurntSushi/ripgrep)                              | For File/text search (Snacks picker)    |
+| [Neovim](https://neovim.io/) ≥ 0.12                                           | Uses `vim.pack`, native LSP APIs        |
+| [ripgrep](https://github.com/BurntSushi/ripgrep)                              | File/text search (Snacks picker)        |
 | [tree-sitter-cli](https://github.com/tree-sitter/tree-sitter/tree/master/cli) | Compile treesitter parsers (`TSUpdate`) |
 | [lazygit](https://github.com/jesseduffield/lazygit)                           | Git TUI integration                     |
 | [Claude Code](https://github.com/anthropics/claude-code)                      | AI pair programming via claudecode.nvim |
-| Node.js                                                                       | GitHub Copilot                          |
 | A [Nerd Font](https://www.nerdfonts.com/)                                     | Icons via mini.icons                    |
 
 ### Optional
@@ -22,8 +21,9 @@ I personally use [ghostty](https://ghostty.org) as my terminal emulator of choic
 
 ### LSP
 
-LSP servers have to be installed manually (I personally use nix for that btw).
-Formatters and linters are only needed for the languages you use. Install the relevant ones on your `PATH`:
+LSP server configs live in `lsp/<name>.lua` — no plugin required. Neovim 0.12's native `vim.lsp.config` / `vim.lsp.enable` APIs load them automatically.
+
+LSP servers must be installed manually (e.g. via Nix). Formatters and linters are only needed for the languages you use:
 
 | Language          | Formatter      | Linter       | LSP                                                                |
 | ----------------- | -------------- | ------------ | ------------------------------------------------------------------ |
@@ -46,11 +46,9 @@ Formatters and linters are only needed for the languages you use. Install the re
 | Zig               | `zig fmt`      | —            | `zls`                                                              |
 | Dockerfile        | —              | —            | `dockerfile-language-server`                                       |
 
-Specific configuration options (e.g. inlay hints, hover actions) are set in the respective server config files in `lsp/` (e.g. `lsp/basedpyright.lua`).
-
 ### DAP
 
-Debug adapters are only needed for the languages you want to debug. Install the relevant ones on your `PATH`:
+Debug adapters are only needed for the languages you want to debug:
 
 | Language | Adapter                        |
 | -------- | ------------------------------ |
@@ -68,8 +66,9 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 ## Features
 
 - **Built-in plugin manager** — `vim.pack` with a lockfile (`nvim-pack-lock.json`) for reproducible installs
-- **AI integration** — Claude Code (`<leader>a`) and GitHub Copilot (granular acceptance: word/line/full, panel view, per-buffer toggle)
-- **Full LSP** — 20 language servers, inlay hints, built-in completion, breadcrumb navigation
+- **Native LSP** — Neovim 0.12 APIs, no nvim-lspconfig; per-server configs in `lsp/`, 21 language servers, inlay hints, breadcrumb navigation
+- **blink.cmp** — ghost text completion with Tab cycling, doc popups, muted Kanagawa theme
+- **AI integration** — Claude Code (`<leader>a`)
 - **Auto-format on save** — via conform.nvim, per filetype
 - **Treesitter** — syntax highlighting and text objects for 23 languages
 - **Git** — gitsigns, fugitive, lazygit, and Snacks git pickers
@@ -85,10 +84,10 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | ---------- | ------------------------------------------------------------------------------------------------------ |
 | UI         | kanagawa.nvim, bufferline.nvim, lualine.nvim, noice.nvim, which-key.nvim, render-markdown.nvim         |
 | Navigation | snacks.nvim (picker, dashboard, lazygit, notifier, indent), flash.nvim, nvim-navic                     |
-| LSP        | nvim-lspconfig, conform.nvim, nvim-lint                                                                |
+| LSP        | blink.cmp, conform.nvim, nvim-lint                                                                     |
 | Syntax     | nvim-treesitter, nvim-treesitter-textobjects                                                           |
 | Git        | gitsigns.nvim, vim-fugitive                                                                            |
-| AI         | claudecode.nvim, copilot.vim                                                                           |
+| AI         | claudecode.nvim                                                                                        |
 | Debug      | nvim-dap, nvim-dap-ui, nvim-dap-virtual-text, nvim-nio                                                 |
 | Editing    | mini.nvim (icons, pairs, surround, ai), Comment.nvim, vim-illuminate, todo-comments.nvim, trouble.nvim |
 | Sessions   | persistence.nvim                                                                                       |
@@ -123,7 +122,6 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 
 ### AI (`<leader>a`)
 
-#### Claude Code
 | Key                         | Action                    |
 | --------------------------- | ------------------------- |
 | `<leader>ac`                | Toggle Claude             |
@@ -132,31 +130,27 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | `<leader>as`                | Send selection            |
 | `<leader>aa` / `<leader>ad` | Accept / deny diff        |
 
-#### Copilot (Insert Mode)
-| Key        | Action                    |
-| ---------- | ------------------------- |
-| `<CR>`     | Accept full suggestion    |
-| `<Tab>`    | Next suggestion           |
-| `<S-Tab>`  | Previous suggestion       |
-| `<M-w>`    | Accept word               |
-| `<M-l>`    | Accept line               |
-| `<M-e>`    | Dismiss suggestion        |
+### Completion (Insert Mode)
 
-#### Copilot (Normal Mode)
-| Key          | Action                    |
-| ------------ | ------------------------- |
-| `<leader>ap` | Open Copilot panel        |
-| `<leader>at` | Toggle Copilot on/off     |
+| Key          | Action                         |
+| ------------ | ------------------------------ |
+| `<Tab>`      | Next suggestion                |
+| `<S-Tab>`    | Previous suggestion            |
+| `<CR>`       | Accept suggestion              |
+| `<C-e>`      | Dismiss                        |
+| `<C-Space>`  | Trigger completion manually    |
 
 ### Code (`<leader>c` / LSP)
 
 | Key          | Action                 |
 | ------------ | ---------------------- |
 | `<leader>ca` | Code action            |
+| `<leader>rn` | Rename symbol          |
 | `gd`         | Go to definition       |
 | `gD`         | Go to declaration      |
 | `gr`         | References             |
 | `gi`         | Implementation         |
+| `gy`         | Type definition        |
 | `K`          | Hover docs             |
 | `[d` / `]d`  | Prev / next diagnostic |
 
@@ -212,15 +206,6 @@ Requires `js-debug` (`vscode-js-debug`) on PATH. Sourcemaps are enabled — stac
 
 ## Customization
 
-LSP server settings live in `lsp/` as individual files (e.g. `lsp/basedpyright.lua`). Add a new file and reference it in the `lspconfig` setup block in `init.lua` to configure an additional server.
+LSP server settings live in `lsp/` as individual files (e.g. `lsp/basedpyright.lua`). Each file returns a table with `cmd`, `filetypes`, `root_markers`, and optionally `settings`. Add a new file and add the server name to `vim.lsp.enable({...})` in `init.lua`.
 
 Formatter and linter mappings are in the `conform.nvim` and `nvim-lint` setup blocks in `init.lua`.
-
-## Copilot Notes
-
-Copilot provides inline code suggestions in insert mode. It is **disabled** in:
-- Markdown (where Claude Code is more useful for writing)
-- Git commit messages
-- Plain text files
-
-The statusline shows a Copilot icon (right side, kanagawa purple) indicating whether Copilot is active for the current buffer.

@@ -22,7 +22,7 @@ vim.pack.add({
   { src = "https://github.com/folke/snacks.nvim",      name = "snacks" },
 
   -- LSP / completion / syntax
-  { src = "https://github.com/neovim/nvim-lspconfig",                       name = "lspconfig",             version = vim.version.range("2.x") },
+  { src = "https://github.com/Saghen/blink.cmp",                            name = "blink.cmp" },
   { src = "https://github.com/stevearc/conform.nvim",                       name = "conform" },
   { src = "https://github.com/mfussenegger/nvim-lint",                      name = "nvim-lint" },
   { src = "https://github.com/nvim-treesitter/nvim-treesitter",             name = "nvim-treesitter",       version = "main" },
@@ -30,7 +30,6 @@ vim.pack.add({
 
   -- Tools
   { src = "https://github.com/coder/claudecode.nvim",   name = "claudecode" },
-  { src = "https://github.com/github/copilot.vim",      name = "copilot" },
   { src = "https://github.com/lewis6991/gitsigns.nvim", name = "gitsigns" },
   { src = "https://github.com/numToStr/Comment.nvim",   name = "comment" },
   { src = "https://github.com/tpope/vim-fugitive",      name = "fugitive" },
@@ -60,6 +59,9 @@ vim.pack.add({
 -- Built-in optional packages
 vim.cmd("packadd nvim.undotree")
 vim.cmd("packadd nvim.difftool")
+
+-- Work around Neovim 0.12 bug: MenuPopup assert error in vim/ui.lua _get_urls
+pcall(vim.api.nvim_clear_autocmds, { event = "MenuPopup", group = "nvim_defaults" })
 
 -- NOTE: ── mini ──────────────────────────────────────────────────────────────────────
 
@@ -321,6 +323,34 @@ end, { desc = "Update all plugins" })
 
 -- NOTE: ── LSP ───────────────────────────────────────────────────────────────────────
 
+require("blink.cmp").setup({
+  keymap = {
+    preset        = "none",
+    ["<CR>"]      = { "accept", "fallback" },
+    ["<Tab>"]     = { "select_next", "fallback" },
+    ["<S-Tab>"]   = { "select_prev", "fallback" },
+    ["<C-e>"]     = { "hide", "fallback" },
+    ["<C-Space>"] = { "show" },
+  },
+  completion = {
+    ghost_text    = { enabled = true },
+    list          = { selection = { preselect = true, auto_insert = false } },
+    documentation = { auto_show = true, auto_show_delay_ms = 200 },
+  },
+  fuzzy = { implementation = "lua" },
+})
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern  = "*",
+  callback = function()
+    vim.api.nvim_set_hl(0, "BlinkCmpMenu",         { bg = "#1F1F28" })
+    vim.api.nvim_set_hl(0, "BlinkCmpMenuBorder",   { bg = "#1F1F28", fg = "#363646" })
+    vim.api.nvim_set_hl(0, "BlinkCmpMenuSelection",{ bg = "#2A2A37" })
+    vim.api.nvim_set_hl(0, "BlinkCmpDoc",          { bg = "#1F1F28" })
+    vim.api.nvim_set_hl(0, "BlinkCmpDocBorder",    { bg = "#1F1F28", fg = "#363646" })
+  end,
+})
+
 local function lsp_complete() return vim.tbl_map(function(c) return c.name end, vim.lsp.get_clients({ bufnr = 0 })) end
 
 vim.api.nvim_create_user_command("LspStop", function(opts)
@@ -342,9 +372,10 @@ vim.api.nvim_create_user_command("LspRestart", function(opts)
   vim.defer_fn(function() vim.api.nvim_exec_autocmds("FileType", { buffer = 0 }) end, 500)
 end, { nargs = "?", complete = lsp_complete, desc = "Restart LSP client(s)" })
 
--- nvim-lspconfig provides default cmd, filetypes, and root_markers for all servers
+-- lsp/<name>.lua files provide cmd, filetypes, and root_markers for each server
 vim.lsp.config("*", {
-  root_markers = { ".git" },
+  root_markers  = { ".git" },
+  capabilities  = require("blink.cmp").get_lsp_capabilities(),
 })
 
 -- Enable all servers (picks up lsp/<name>.lua for custom settings)
@@ -392,17 +423,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
     end
 
-    -- Built-in completion
-    if client and client:supports_method("textDocument/completion") then
-      vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
-    end
-
     -- Navic (breadcrumbs)
     if client and client:supports_method("textDocument/documentSymbol") then
       require("nvim-navic").attach(client, ev.buf)
     end
   end,
 })
+
 
 local signs = {
   [vim.diagnostic.severity.ERROR] = "\xEF\x81\x97 ", -- U+F057 nf-fa-times_circle
@@ -522,29 +549,6 @@ vim.keymap.set("n",          "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>",          
 vim.keymap.set("v",          "<leader>as", "<cmd>ClaudeCodeSend<cr>",             { desc = "Send to Claude" })
 vim.keymap.set("n",          "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>",       { desc = "Accept diff" })
 vim.keymap.set("n",          "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>",         { desc = "Deny diff" })
-
--- Copilot
-vim.g.copilot_no_tab_map = true
-vim.g.copilot_filetypes = {
-  markdown = false,
-  gitcommit = false,
-  text = false,
-}
-
--- Accept full suggestion (falls back to normal Enter if no suggestion)
-vim.keymap.set("i", "<CR>", 'copilot#Accept("<CR>")', { expr = true, replace_keycodes = false, desc = "Copilot accept or enter" })
-
-vim.keymap.set("i", "<Tab>",   "<Plug>(copilot-next)",         { desc = "Copilot next suggestion" })
-vim.keymap.set("i", "<S-Tab>", "<Plug>(copilot-previous)",     { desc = "Copilot prev suggestion" })
-vim.keymap.set("i", "<M-w>",   "<Plug>(copilot-accept-word)",  { desc = "Copilot accept word" })
-vim.keymap.set("i", "<M-l>",   "<Plug>(copilot-accept-line)",  { desc = "Copilot accept line" })
-vim.keymap.set("i", "<M-e>",   "<Plug>(copilot-dismiss)",      { desc = "Copilot dismiss" })
-vim.keymap.set("n", "<leader>ap", "<cmd>Copilot panel<CR>",     { desc = "Copilot panel" })
-vim.keymap.set("n", "<leader>at", function()
-  local enabled = vim.b.copilot_enabled
-  vim.b.copilot_enabled = (enabled == false) and true or false
-  vim.notify("Copilot " .. (vim.b.copilot_enabled == false and "disabled" or "enabled"))
-end, { desc = "Toggle copilot" })
 
 -- Git (Snacks)
 if vim.fn.executable("lazygit") == 1 then
@@ -747,13 +751,6 @@ require("lualine").setup({
             return { added = gs.added, modified = gs.changed, removed = gs.removed }
           end
         end,
-      },
-      {
-        function()
-          local status = vim.fn["copilot#Enabled"]()
-          return status == 1 and "" or "\xEF\x84\x93 off"
-        end,
-        color = { fg = "#957fb8" },
       },
     },
     lualine_y = {
