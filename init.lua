@@ -169,6 +169,7 @@ opt.signcolumn = "yes"
 opt.cursorline = true
 opt.scrolloff = 10
 opt.sidescrolloff = 8
+opt.sidescroll = 1        -- smooth horizontal scroll (1 col at a time)
 opt.showmode = false
 opt.winborder = "rounded"
 opt.pumheight = 10
@@ -204,6 +205,8 @@ opt.undolevels = 10000
 opt.swapfile = false
 opt.backup = false
 opt.writebackup = false
+opt.sessionoptions:remove("options")  -- prevent stale options bleeding across sessions
+opt.viewoptions:remove("options")
 
 -- Performance
 opt.updatetime = 300
@@ -234,6 +237,10 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })
 
 -- Editing
 vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines" })
+
+-- Insert-mode undo breakpoints: <C-U>/<C-W> become independently undoable
+vim.keymap.set("i", "<C-U>", "<C-G>u<C-U>")
+vim.keymap.set("i", "<C-W>", "<C-G>u<C-W>")
 
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
