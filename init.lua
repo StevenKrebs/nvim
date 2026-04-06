@@ -18,42 +18,42 @@ vim.api.nvim_create_autocmd("PackChanged", {
 
 vim.pack.add({
   -- Foundational (must load first: provides nvim-web-devicons mock)
-  { src = "https://github.com/echasnovski/mini.nvim",  name = "mini" },
-  { src = "https://github.com/folke/snacks.nvim",      name = "snacks" },
+  'https://github.com/echasnovski/mini.nvim',
+  'https://github.com/folke/snacks.nvim',
 
   -- LSP / completion / syntax
-  { src = "https://github.com/Saghen/blink.cmp",                            name = "blink.cmp" },
-  { src = "https://github.com/stevearc/conform.nvim",                       name = "conform" },
-  { src = "https://github.com/mfussenegger/nvim-lint",                      name = "nvim-lint" },
-  { src = "https://github.com/nvim-treesitter/nvim-treesitter",             name = "nvim-treesitter",       version = "main" },
-  { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects", name = "treesitter-textobjects" },
+  'https://github.com/Saghen/blink.cmp',
+  'https://github.com/stevearc/conform.nvim',
+  'https://github.com/mfussenegger/nvim-lint',
+  { src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' },
+  'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
 
   -- Tools
-  { src = "https://github.com/coder/claudecode.nvim",   name = "claudecode" },
-  { src = "https://github.com/lewis6991/gitsigns.nvim", name = "gitsigns" },
-  { src = "https://github.com/numToStr/Comment.nvim",   name = "comment" },
-  { src = "https://github.com/tpope/vim-fugitive",      name = "fugitive" },
-  { src = "https://github.com/folke/persistence.nvim",  name = "persistence" },
+  'https://github.com/coder/claudecode.nvim',
+  'https://github.com/lewis6991/gitsigns.nvim',
+  'https://github.com/numToStr/Comment.nvim',
+  'https://github.com/tpope/vim-fugitive',
+  'https://github.com/folke/persistence.nvim',
 
   -- Debug
-  { src = "https://github.com/mfussenegger/nvim-dap",          name = "nvim-dap" },
-  { src = "https://github.com/nvim-neotest/nvim-nio",           name = "nvim-nio" },
-  { src = "https://github.com/rcarriga/nvim-dap-ui",            name = "nvim-dap-ui" },
-  { src = "https://github.com/theHamsta/nvim-dap-virtual-text", name = "nvim-dap-virtual-text" },
+  'https://github.com/mfussenegger/nvim-dap',
+  'https://github.com/nvim-neotest/nvim-nio',
+  'https://github.com/rcarriga/nvim-dap-ui',
+  'https://github.com/theHamsta/nvim-dap-virtual-text',
 
   -- UI
-  { src = "https://github.com/rebelot/kanagawa.nvim",                         name = "kanagawa" },
-  { src = "https://github.com/akinsho/bufferline.nvim",                       name = "bufferline" },
-  { src = "https://github.com/nvim-lualine/lualine.nvim",                     name = "lualine" },
-  { src = "https://github.com/SmiteshP/nvim-navic",                           name = "navic" },
-  { src = "https://github.com/RRethy/vim-illuminate",                         name = "illuminate" },
-  { src = "https://github.com/MeanderingProgrammer/render-markdown.nvim",     name = "render-markdown" },
-  { src = "https://github.com/folke/flash.nvim",                              name = "flash" },
-  { src = "https://github.com/folke/which-key.nvim",                          name = "which-key" },
-  { src = "https://github.com/folke/todo-comments.nvim",                      name = "todo-comments" },
-  { src = "https://github.com/folke/trouble.nvim",                            name = "trouble" },
-  { src = "https://github.com/folke/noice.nvim",                              name = "noice" },
-  { src = "https://github.com/MunifTanjim/nui.nvim",                          name = "nui" },
+  'https://github.com/rebelot/kanagawa.nvim',
+  'https://github.com/akinsho/bufferline.nvim',
+  'https://github.com/nvim-lualine/lualine.nvim',
+  'https://github.com/SmiteshP/nvim-navic',
+  'https://github.com/RRethy/vim-illuminate',
+  'https://github.com/MeanderingProgrammer/render-markdown.nvim',
+  'https://github.com/folke/flash.nvim',
+  'https://github.com/folke/which-key.nvim',
+  'https://github.com/folke/todo-comments.nvim',
+  'https://github.com/folke/trouble.nvim',
+  'https://github.com/folke/noice.nvim',
+  'https://github.com/MunifTanjim/nui.nvim',
 })
 
 -- Built-in optional packages
