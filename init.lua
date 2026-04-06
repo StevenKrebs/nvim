@@ -205,8 +205,8 @@ opt.undolevels = 10000
 opt.swapfile = false
 opt.backup = false
 opt.writebackup = false
-opt.sessionoptions:remove("options")  -- prevent stale options bleeding across sessions
-opt.viewoptions:remove("options")
+opt.sessionoptions = opt.sessionoptions - "options"  -- prevent stale options bleeding across sessions
+opt.viewoptions    = opt.viewoptions    - "options"
 
 -- Performance
 opt.updatetime = 300
@@ -676,6 +676,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
   once = true,
   callback = function()
     local _notify = vim.notify
+    ---@diagnostic disable-next-line: duplicate-set-field
     vim.notify = function(msg, ...) if msg ~= "Kanagawa: compiled successfully!" then _notify(msg, ...) end end
     vim.cmd("KanagawaCompile")
     vim.notify = _notify
