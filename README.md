@@ -11,13 +11,14 @@ This repo is the outcome of my efforts. A single init.lua that manages everythin
 | [ripgrep](https://github.com/BurntSushi/ripgrep)                              | File/text search (Snacks picker)        |
 | [tree-sitter-cli](https://github.com/tree-sitter/tree-sitter/tree/master/cli) | Compile treesitter parsers (`TSUpdate`) |
 | [lazygit](https://github.com/jesseduffield/lazygit)                           | Git TUI integration                     |
-| [Claude Code](https://github.com/anthropics/claude-code)                      | AI pair programming via claudecode.nvim |
 | A [Nerd Font](https://www.nerdfonts.com/)                                     | Icons via mini.icons                    |
 
 ### Optional
 
 I personally use [ghostty](https://ghostty.org) as my terminal emulator of choice, combined with
 [zsh](https://www.zsh.org/) and [starship](https://starship.rs/) for a modern shell experience. These are not required to use the nvim config, but they do complement it nicely.
+
+External coding assistants are optional and kept outside the editor plugin graph. I use them in terminal splits instead of Neovim-specific integrations.
 
 ### LSP
 
@@ -34,7 +35,7 @@ LSP servers must be installed manually (e.g. via Nix). Formatters and linters ar
 | Rust              | —              | —            | `rust-analyzer`                                                    |
 | Go                | —              | —            | `gopls`                                                            |
 | JS/TS             | `prettier`     | —            | `typescript-language-server`                                       |
-| JSON/YAML/HTML/MD | `prettier`     | —            | `vscode-langservers-extracted`, `yaml-language-server`, `marksman` |
+| JSON/YAML/HTML/MD | `prettier`     | —            | `vscode-langservers-extracted`, `yaml-language-server`, `markdown-oxide` |
 | CSS / Tailwind    | `prettier`     | —            | `vscode-langservers-extracted`, `tailwindcss`                      |
 | TOML              | `taplo`        | —            | `taplo`                                                            |
 | C/C++             | `clang-format` | —            | `clangd`                                                           |
@@ -68,7 +69,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 - **Built-in plugin manager** — `vim.pack` with a lockfile (`nvim-pack-lock.json`) for reproducible installs
 - **Native LSP** — Neovim 0.12 APIs, no nvim-lspconfig; per-server configs in `lsp/`, 21 language servers, inlay hints, breadcrumb navigation
 - **blink.cmp** — ghost text completion with Tab cycling, doc popups, muted Kanagawa theme
-- **AI integration** — Claude Code (`<leader>a`)
+- **Terminal-first workflow** — external tools stay in terminal splits instead of editor-specific plugins
 - **Auto-format on save** — via conform.nvim, per filetype
 - **Treesitter** — syntax highlighting and text objects for 23 languages
 - **Git** — gitsigns, fugitive, lazygit, and Snacks git pickers
@@ -87,7 +88,6 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | LSP        | blink.cmp, conform.nvim, nvim-lint                                                                     |
 | Syntax     | nvim-treesitter, nvim-treesitter-textobjects                                                           |
 | Git        | gitsigns.nvim, vim-fugitive                                                                            |
-| AI         | claudecode.nvim                                                                                        |
 | Debug      | nvim-dap, nvim-dap-ui, nvim-dap-virtual-text, nvim-nio                                                 |
 | Editing    | mini.nvim (icons, pairs, surround, ai), Comment.nvim, vim-illuminate, todo-comments.nvim, trouble.nvim |
 | Sessions   | persistence.nvim                                                                                       |
@@ -120,15 +120,11 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | `<leader>gc` / `<leader>gd` | Fugitive commit / diff   |
 | `<leader>gh*`               | Gitsigns hunk operations |
 
-### AI (`<leader>a`)
+### Terminal
 
-| Key                         | Action                    |
-| --------------------------- | ------------------------- |
-| `<leader>ac`                | Toggle Claude             |
-| `<leader>af`                | Focus Claude              |
-| `<leader>ab`                | Add current buffer        |
-| `<leader>as`                | Send selection            |
-| `<leader>aa` / `<leader>ad` | Accept / deny diff        |
+| Key          | Action                        |
+| ------------ | ----------------------------- |
+| `<leader>z`  | Open bottom terminal split    |
 
 ### Completion (Insert Mode)
 
@@ -206,6 +202,6 @@ Requires `js-debug` (`vscode-js-debug`) on PATH. Sourcemaps are enabled — stac
 
 ## Customization
 
-LSP server settings live in `lsp/` as individual files (e.g. `lsp/basedpyright.lua`). Each file returns a table with `cmd`, `filetypes`, `root_markers`, and optionally `settings`. Add a new file and add the server name to `vim.lsp.enable({...})` in `init.lua`.
+LSP server settings live in `lsp/` as individual files (e.g. `lsp/basedpyright.lua`, `lsp/markdown_oxide.lua`). Each file returns a table with `cmd`, `filetypes`, `root_markers`, and optionally `settings` or `capabilities`. Add a new file and add the server name to `vim.lsp.enable({...})` in `init.lua`.
 
 Formatter and linter mappings are in the `conform.nvim` and `nvim-lint` setup blocks in `init.lua`.
