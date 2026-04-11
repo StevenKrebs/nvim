@@ -286,18 +286,54 @@ vim.api.nvim_create_autocmd("TermClose", {
   end,
 })
 
--- Restart when the last named listed buffer is deleted
-vim.api.nvim_create_autocmd("BufDelete", {
-  callback = function(args)
-    local remaining = vim.tbl_filter(function(b)
-      return vim.api.nvim_buf_is_valid(b)
-        and vim.bo[b].buflisted
-        and b ~= args.buf
-        and vim.api.nvim_buf_get_name(b) ~= ""
-    end, vim.api.nvim_list_bufs())
-    if #remaining == 0 then
-      vim.schedule(function() vim.cmd("restart") end)
+local restart_on_last_buffer_group = vim.api.nvim_create_augroup("restart_on_last_buffer", { clear = true })
+local pending_restart_after_last_buffer_delete = false
+
+local function is_real_file_buffer(buf, exclude_buf)
+  return vim.api.nvim_buf_is_valid(buf)
+    and vim.bo[buf].buflisted
+    and buf ~= exclude_buf
+    and vim.bo[buf].buftype == ""
+    and vim.api.nvim_buf_get_name(buf) ~= ""
+end
+
+local function has_real_file_buffers(exclude_buf)
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if is_real_file_buffer(buf, exclude_buf) then
+      return true
     end
+  end
+  return false
+end
+
+local function is_synthetic_empty_buffer(buf)
+  return vim.api.nvim_buf_get_name(buf) == ""
+    and vim.bo[buf].buflisted
+    and vim.bo[buf].buftype == ""
+    and vim.bo[buf].filetype == ""
+end
+
+vim.api.nvim_create_autocmd("BufDelete", {
+  group = restart_on_last_buffer_group,
+  callback = function(args)
+    pending_restart_after_last_buffer_delete = not has_real_file_buffers(args.buf)
+  end,
+})
+
+vim.api.nvim_create_autocmd("SafeState", {
+  group = restart_on_last_buffer_group,
+  callback = function()
+    if not pending_restart_after_last_buffer_delete then
+      return
+    end
+
+    local current_buf = vim.api.nvim_get_current_buf()
+    if has_real_file_buffers() or not is_synthetic_empty_buffer(current_buf) then
+      return
+    end
+
+    pending_restart_after_last_buffer_delete = false
+    vim.cmd("restart")
   end,
 })
 
@@ -705,7 +741,7 @@ vim.keymap.set("n", "<leader>bP", "<cmd>BufferLineGroupClose ungrouped<cr>", { d
 vim.keymap.set("n", "<leader>br", "<cmd>BufferLineCloseRight<cr>",           { desc = "Delete buffers to the right" })
 vim.keymap.set("n", "<leader>bl", "<cmd>BufferLineCloseLeft<cr>",            { desc = "Delete buffers to the left" })
 vim.keymap.set("n", "<leader>bj", "<cmd>BufferLinePick<cr>",                 { desc = "Pick buffer" })
-vim.keymap.set("n", "<leader>bd", function() Snacks.bufdelete() end,          { desc = "Delete current buffer" })
+vim.keymap.set("n", "<leader>bd", function() Snacks.bufdelete() end,           { desc = "Delete current buffer" })
 
 -- Navic (breadcrumbs)
 require("nvim-navic").setup()
