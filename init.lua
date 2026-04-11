@@ -155,6 +155,7 @@ vim.keymap.set("n", "<leader>fb", function() Snacks.picker.buffers()     end, { 
 vim.keymap.set("n", "<leader>fr", function() Snacks.picker.recent()      end, { desc = "Recent files" })
 vim.keymap.set("n", "<leader>fh", function() Snacks.picker.help()        end, { desc = "Help" })
 vim.keymap.set("n", "<leader>fd", function() Snacks.picker.diagnostics() end, { desc = "Diagnostics" })
+vim.keymap.set("n", "<leader>R", ":restart<CR><CR>",                        { desc = "Restart Nvim" })
 
 -- NOTE: ── Core ──────────────────────────────────────────────────────────────────────
 
@@ -946,6 +947,7 @@ vim.keymap.set("n", "<F11>", function() dap.step_into() end,  { desc = "DAP step
 -- Which-key
 require("which-key").setup({
   preset = "helix",
+  sort = { "manual" },
   spec = {
     { "<leader>d",  group = "debug",       mode = { "n", "v" } },
     { "<leader>b",  group = "buffer",      mode = { "n", "v" } },
@@ -957,6 +959,7 @@ require("which-key").setup({
     { "<leader>s",  group = "search",      mode = { "n", "v" } },
     { "<leader>q",  group = "session",     mode = { "n", "v" } },
     { "<leader>x",  group = "diagnostics", mode = { "n", "v" } },
+    { "<leader>R",  desc = "Restart Nvim", mode = { "n", "v" } },
     { "<leader>w",  group = "windows",     proxy = "<c-w>",
       expand = function() return require("which-key.extras").expand.win() end },
     { "[", group = "prev" },
