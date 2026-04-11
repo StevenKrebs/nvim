@@ -148,15 +148,6 @@ require("snacks").setup({
   },
 })
 
-vim.keymap.set("n", "<leader>e",  function() Snacks.picker.explorer()    end, { desc = "File explorer" })
-vim.keymap.set("n", "<leader>ff", function() Snacks.picker.files()       end, { desc = "Find files" })
-vim.keymap.set("n", "<leader>fg", function() Snacks.picker.grep()        end, { desc = "Grep" })
-vim.keymap.set("n", "<leader>fb", function() Snacks.picker.buffers()     end, { desc = "Buffers" })
-vim.keymap.set("n", "<leader>fr", function() Snacks.picker.recent()      end, { desc = "Recent files" })
-vim.keymap.set("n", "<leader>fh", function() Snacks.picker.help()        end, { desc = "Help" })
-vim.keymap.set("n", "<leader>fd", function() Snacks.picker.diagnostics() end, { desc = "Diagnostics" })
-vim.keymap.set("n", "<leader>R", ":restart<CR><CR>",                        { desc = "Restart Nvim" })
-
 -- NOTE: ── Core ──────────────────────────────────────────────────────────────────────
 
 local opt = vim.opt
@@ -218,10 +209,6 @@ opt.timeoutlen = 300
 vim.keymap.set("t", "<Esc>", function()
   return vim.bo.filetype == "fzf" and "<Esc>" or "<C-\\><C-n>"
 end, { expr = true, desc = "Exit terminal mode" })
-
-vim.keymap.set("n", "<leader>z", function()
-  vim.cmd("10split | terminal")
-end, { desc = "Open terminal in bottom split" })
 
 -- Navigation: wrapped line movement with jump list support for counts
 vim.keymap.set("n", "k", function()
@@ -449,18 +436,20 @@ vim.lsp.enable({
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    local opts = { buffer = ev.buf }
+    local function bufopts(desc)
+      return { buffer = ev.buf, desc = desc }
+    end
 
-    vim.keymap.set("n", "gd",         vim.lsp.buf.definition,      opts)
-    vim.keymap.set("n", "gD",         vim.lsp.buf.declaration,      opts)
-    vim.keymap.set("n", "gr",         vim.lsp.buf.references,       opts)
-    vim.keymap.set("n", "gi",         vim.lsp.buf.implementation,   opts)
-    vim.keymap.set("n", "gy",         vim.lsp.buf.type_definition,  opts)
-    vim.keymap.set("n", "K",          vim.lsp.buf.hover,            opts)
-    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename,           opts)
-    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action,      opts)
-    vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, opts)
-    vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count =  1 }) end, opts)
+    vim.keymap.set("n", "gd",         vim.lsp.buf.definition,     bufopts("Goto definition"))
+    vim.keymap.set("n", "gD",         vim.lsp.buf.declaration,    bufopts("Goto declaration"))
+    vim.keymap.set("n", "gr",         vim.lsp.buf.references,     bufopts("Goto references"))
+    vim.keymap.set("n", "gi",         vim.lsp.buf.implementation, bufopts("Goto implementation"))
+    vim.keymap.set("n", "gy",         vim.lsp.buf.type_definition, bufopts("Goto type definition"))
+    vim.keymap.set("n", "K",          vim.lsp.buf.hover,          bufopts("Hover"))
+    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action,    bufopts("Code action"))
+    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename,         bufopts("Rename symbol"))
+    vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, bufopts("Previous diagnostic"))
+    vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count =  1 }) end, bufopts("Next diagnostic"))
 
     if client and client:supports_method("textDocument/inlayHint") then
       vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
@@ -581,20 +570,6 @@ require("nvim-treesitter-textobjects").setup({
 })
 
 -- Git (Snacks)
-if vim.fn.executable("lazygit") == 1 then
-  vim.keymap.set("n", "<leader>gg", function() Snacks.lazygit({ cwd = Snacks.git.get_root() }) end, { desc = "Lazygit (root)" })
-  vim.keymap.set("n", "<leader>gG", function() Snacks.lazygit() end,                                { desc = "Lazygit (cwd)" })
-end
-
-vim.keymap.set("n",          "<leader>gl", function() Snacks.picker.git_log({ cwd = Snacks.git.get_root() }) end, { desc = "Git log" })
-vim.keymap.set("n",          "<leader>gL", function() Snacks.picker.git_log() end,                               { desc = "Git log (cwd)" })
-vim.keymap.set("n",          "<leader>gb", function() Snacks.picker.git_log_line() end,                          { desc = "Git blame line" })
-vim.keymap.set("n",          "<leader>gf", function() Snacks.picker.git_log_file() end,                          { desc = "Git file history" })
-vim.keymap.set({ "n", "x" }, "<leader>gB", function() Snacks.gitbrowse() end,                                    { desc = "Git browse" })
-vim.keymap.set({ "n", "x" }, "<leader>gY", function()
-  Snacks.gitbrowse({ open = function(url) vim.fn.setreg("+", url) end, notify = false })
-end, { desc = "Git browse (copy URL)" })
-
 -- Gitsigns
 require("gitsigns").setup({
   signs = {
@@ -622,15 +597,15 @@ require("gitsigns").setup({
     map("n", "]H", function() gs.nav_hunk("last") end,  "Last hunk")
     map("n", "[H", function() gs.nav_hunk("first") end, "First hunk")
 
-    map({ "n", "v" }, "<leader>ghs", ":Gitsigns stage_hunk<cr>",      "Stage hunk")
-    map({ "n", "v" }, "<leader>ghr", ":Gitsigns reset_hunk<cr>",      "Reset hunk")
-    map("n",          "<leader>ghS", gs.stage_buffer,                  "Stage buffer")
-    map("n",          "<leader>ghR", gs.reset_buffer,                  "Reset buffer")
-    map("n",          "<leader>ghu", gs.undo_stage_hunk,               "Undo stage hunk")
-    map("n",          "<leader>ghp", gs.preview_hunk_inline,           "Preview hunk")
     map("n",          "<leader>ghb", gs.blame_line,                    "Blame line")
     map("n",          "<leader>ghd", gs.diffthis,                      "Diff this")
+    map("n",          "<leader>ghp", gs.preview_hunk_inline,           "Preview hunk")
+    map({ "n", "v" }, "<leader>ghr", ":Gitsigns reset_hunk<cr>",       "Reset hunk")
+    map({ "n", "v" }, "<leader>ghs", ":Gitsigns stage_hunk<cr>",       "Stage hunk")
+    map("n",          "<leader>ghu", gs.undo_stage_hunk,               "Undo stage hunk")
     map("n",          "<leader>ghD", function() gs.diffthis("~") end,  "Diff this ~")
+    map("n",          "<leader>ghR", gs.reset_buffer,                  "Reset buffer")
+    map("n",          "<leader>ghS", gs.stage_buffer,                  "Stage buffer")
 
     -- Text object: ih = inner hunk
     map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<cr>", "Gitsigns hunk")
@@ -640,26 +615,10 @@ require("gitsigns").setup({
 -- Comment.nvim
 require("Comment").setup()
 
--- Fugitive
-vim.keymap.set("n", "<leader>gc", "<cmd>Git commit<cr>",      { desc = "Git commit" })
-vim.keymap.set("n", "<leader>gd", "<cmd>Git diff<cr>",        { desc = "Git diff" })
-vim.keymap.set("n", "<leader>gD", "<cmd>Gvdiffsplit<cr>",     { desc = "Git diff split" })
-vim.keymap.set("n", "<leader>gw", "<cmd>Gwrite<cr>",          { desc = "Git write (stage)" })
-
 -- Session management
 vim.opt.sessionoptions = "buffers,curdir,folds,help,tabpages,winsize,terminal"
 
 require("persistence").setup()
-
-vim.keymap.set("n", "<leader>qs", function() require("persistence").load() end,               { desc = "Restore session" })
-vim.keymap.set("n", "<leader>ql", function() require("persistence").load({ last = true }) end, { desc = "Restore last session" })
-vim.keymap.set("n", "<leader>qd", function() require("persistence").stop() end,               { desc = "Don't save session" })
-
--- Undotree
-vim.keymap.set("n", "<leader>u", vim.cmd.Undotree, { desc = "Undotree" })
-
--- Difftool
-vim.keymap.set("n", "<leader>gt", "<cmd>DiffTool<cr>", { desc = "Diff tool" })
 
 -- NOTE: ── UI ────────────────────────────────────────────────────────────────────────
 
@@ -737,13 +696,6 @@ vim.keymap.set("n", "[b",         "<cmd>BufferLineCyclePrev<cr>",            { d
 vim.keymap.set("n", "]b",         "<cmd>BufferLineCycleNext<cr>",            { desc = "Next buffer" })
 vim.keymap.set("n", "[B",         "<cmd>BufferLineMovePrev<cr>",             { desc = "Move buffer prev" })
 vim.keymap.set("n", "]B",         "<cmd>BufferLineMoveNext<cr>",             { desc = "Move buffer next" })
-vim.keymap.set("n", "<leader>bp", "<cmd>BufferLineTogglePin<cr>",            { desc = "Toggle pin" })
-vim.keymap.set("n", "<leader>bP", "<cmd>BufferLineGroupClose ungrouped<cr>", { desc = "Delete non-pinned buffers" })
-vim.keymap.set("n", "<leader>br", "<cmd>BufferLineCloseRight<cr>",           { desc = "Delete buffers to the right" })
-vim.keymap.set("n", "<leader>bl", "<cmd>BufferLineCloseLeft<cr>",            { desc = "Delete buffers to the left" })
-vim.keymap.set("n", "<leader>bj", "<cmd>BufferLinePick<cr>",                 { desc = "Pick buffer" })
-vim.keymap.set("n", "<leader>bd", function() Snacks.bufdelete() end,           { desc = "Delete current buffer" })
-
 -- Navic (breadcrumbs)
 require("nvim-navic").setup()
 
@@ -820,11 +772,6 @@ require("noice").setup({
   },
 })
 
-vim.keymap.set("n", "<leader>sn",  "",                                                      { desc = "+noice" })
-vim.keymap.set("n", "<leader>snl", function() require("noice").cmd("last") end,             { desc = "Last message" })
-vim.keymap.set("n", "<leader>snh", function() require("noice").cmd("history") end,          { desc = "History" })
-vim.keymap.set("n", "<leader>sna", function() require("noice").cmd("all") end,              { desc = "All" })
-vim.keymap.set("n", "<leader>snd", function() require("noice").cmd("dismiss") end,          { desc = "Dismiss all" })
 vim.keymap.set("c", "<S-Enter>",   function() require("noice").redirect(vim.fn.getcmdline()) end, { desc = "Redirect cmdline" })
 
 vim.keymap.set({ "i", "n", "s" }, "<c-f>", function()
@@ -929,62 +876,127 @@ dap.listeners.before.event_exited.dapui_config     = function() dapui.close() en
 -- Inline variable values while stepping
 require("nvim-dap-virtual-text").setup()
 
-vim.keymap.set("n",        "<leader>db", function() dap.toggle_breakpoint() end,                         { desc = "Toggle breakpoint" })
-vim.keymap.set("n",        "<leader>dB", function() dap.set_breakpoint(vim.fn.input("Condition: ")) end, { desc = "Conditional breakpoint" })
-vim.keymap.set("n",        "<leader>dc", function() dap.continue() end,                                  { desc = "Continue" })
-vim.keymap.set("n",        "<leader>di", function() dap.step_into() end,                                 { desc = "Step into" })
-vim.keymap.set("n",        "<leader>do", function() dap.step_over() end,                                 { desc = "Step over" })
-vim.keymap.set("n",        "<leader>dO", function() dap.step_out() end,                                  { desc = "Step out" })
-vim.keymap.set("n",        "<leader>dr", function() dap.repl.toggle() end,                               { desc = "REPL toggle" })
-vim.keymap.set("n",        "<leader>dl", function() dap.run_last() end,                                  { desc = "Run last" })
-vim.keymap.set("n",        "<leader>dq", function() dap.terminate() end,                                 { desc = "Terminate" })
-vim.keymap.set("n",        "<leader>du", function() dapui.toggle() end,                                  { desc = "Toggle UI" })
-vim.keymap.set({ "n", "v" }, "<leader>de", function() dapui.eval() end,                                  { desc = "Eval expression" })
 vim.keymap.set("n", "<F5>",  function() dap.continue() end,   { desc = "DAP continue" })
 vim.keymap.set("n", "<F10>", function() dap.step_over() end,  { desc = "DAP step over" })
 vim.keymap.set("n", "<F11>", function() dap.step_into() end,  { desc = "DAP step into" })
+
+-- NOTE: ── Leader Keymaps ────────────────────────────────────────────────────────────
+
+-- Global alphabetical order: a-z, then A-Z within each prefix.
+vim.keymap.set("n", "<leader>bd", function() Snacks.bufdelete() end, { desc = "Delete current buffer" })
+vim.keymap.set("n", "<leader>bj", "<cmd>BufferLinePick<cr>", { desc = "Pick buffer" })
+vim.keymap.set("n", "<leader>bl", "<cmd>BufferLineCloseLeft<cr>", { desc = "Delete buffers to the left" })
+vim.keymap.set("n", "<leader>bp", "<cmd>BufferLineTogglePin<cr>", { desc = "Toggle pin" })
+vim.keymap.set("n", "<leader>br", "<cmd>BufferLineCloseRight<cr>", { desc = "Delete buffers to the right" })
+vim.keymap.set("n", "<leader>bP", "<cmd>BufferLineGroupClose ungrouped<cr>", { desc = "Delete non-pinned buffers" })
+
+vim.keymap.set("n", "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", { desc = "LSP definitions/references" })
+vim.keymap.set("n", "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", { desc = "Symbols" })
+
+vim.keymap.set("n", "<leader>db", function() dap.toggle_breakpoint() end, { desc = "Toggle breakpoint" })
+vim.keymap.set("n", "<leader>dc", function() dap.continue() end, { desc = "Continue" })
+vim.keymap.set({ "n", "v" }, "<leader>de", function() dapui.eval() end, { desc = "Eval expression" })
+vim.keymap.set("n", "<leader>di", function() dap.step_into() end, { desc = "Step into" })
+vim.keymap.set("n", "<leader>dl", function() dap.run_last() end, { desc = "Run last" })
+vim.keymap.set("n", "<leader>do", function() dap.step_over() end, { desc = "Step over" })
+vim.keymap.set("n", "<leader>dq", function() dap.terminate() end, { desc = "Terminate" })
+vim.keymap.set("n", "<leader>dr", function() dap.repl.toggle() end, { desc = "REPL toggle" })
+vim.keymap.set("n", "<leader>du", function() dapui.toggle() end, { desc = "Toggle UI" })
+vim.keymap.set("n", "<leader>dB", function() dap.set_breakpoint(vim.fn.input("Condition: ")) end, { desc = "Conditional breakpoint" })
+vim.keymap.set("n", "<leader>dO", function() dap.step_out() end, { desc = "Step out" })
+
+vim.keymap.set("n", "<leader>e", function() Snacks.picker.explorer() end, { desc = "File explorer" })
+
+vim.keymap.set("n", "<leader>fb", function() Snacks.picker.buffers() end, { desc = "Buffers" })
+vim.keymap.set("n", "<leader>fd", function() Snacks.picker.diagnostics() end, { desc = "Diagnostics" })
+vim.keymap.set("n", "<leader>ff", function() Snacks.picker.files() end, { desc = "Find files" })
+vim.keymap.set("n", "<leader>fg", function() Snacks.picker.grep() end, { desc = "Grep" })
+vim.keymap.set("n", "<leader>fh", function() Snacks.picker.help() end, { desc = "Help" })
+vim.keymap.set("n", "<leader>fr", function() Snacks.picker.recent() end, { desc = "Recent files" })
+
+vim.keymap.set("n", "<leader>gb", function() Snacks.picker.git_log_line() end, { desc = "Git blame line" })
+vim.keymap.set({ "n", "x" }, "<leader>gB", function() Snacks.gitbrowse() end, { desc = "Git browse" })
+vim.keymap.set("n", "<leader>gc", "<cmd>Git commit<cr>", { desc = "Git commit" })
+vim.keymap.set("n", "<leader>gd", "<cmd>Git diff<cr>", { desc = "Git diff" })
+vim.keymap.set("n", "<leader>gf", function() Snacks.picker.git_log_file() end, { desc = "Git file history" })
+if vim.fn.executable("lazygit") == 1 then
+  vim.keymap.set("n", "<leader>gg", function() Snacks.lazygit({ cwd = Snacks.git.get_root() }) end, { desc = "Lazygit (root)" })
+end
+vim.keymap.set("n", "<leader>gl", function() Snacks.picker.git_log({ cwd = Snacks.git.get_root() }) end, { desc = "Git log" })
+vim.keymap.set("n", "<leader>gt", "<cmd>DiffTool<cr>", { desc = "Diff tool" })
+vim.keymap.set("n", "<leader>gw", "<cmd>Gwrite<cr>", { desc = "Git write (stage)" })
+vim.keymap.set("n", "<leader>gD", "<cmd>Gvdiffsplit<cr>", { desc = "Git diff split" })
+if vim.fn.executable("lazygit") == 1 then
+  vim.keymap.set("n", "<leader>gG", function() Snacks.lazygit() end, { desc = "Lazygit (cwd)" })
+end
+vim.keymap.set("n", "<leader>gL", function() Snacks.picker.git_log() end, { desc = "Git log (cwd)" })
+vim.keymap.set({ "n", "x" }, "<leader>gY", function()
+  Snacks.gitbrowse({ open = function(url) vim.fn.setreg("+", url) end, notify = false })
+end, { desc = "Git browse (copy URL)" })
+
+vim.keymap.set("n", "<leader>qd", function() require("persistence").stop() end, { desc = "Don't save session" })
+vim.keymap.set("n", "<leader>ql", function() require("persistence").load({ last = true }) end, { desc = "Restore last session" })
+vim.keymap.set("n", "<leader>qs", function() require("persistence").load() end, { desc = "Restore session" })
+
+vim.keymap.set("n", "<leader>sn", "", { desc = "+noice" })
+vim.keymap.set("n", "<leader>sna", function() require("noice").cmd("all") end, { desc = "All" })
+vim.keymap.set("n", "<leader>snd", function() require("noice").cmd("dismiss") end, { desc = "Dismiss all" })
+vim.keymap.set("n", "<leader>snh", function() require("noice").cmd("history") end, { desc = "History" })
+vim.keymap.set("n", "<leader>snl", function() require("noice").cmd("last") end, { desc = "Last message" })
+vim.keymap.set("n", "<leader>st", function() Snacks.picker.todo_comments() end, { desc = "Todo comments" })
+
+vim.keymap.set("n", "<leader>u", vim.cmd.Undotree, { desc = "Undotree" })
+
+vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Diagnostics" })
+vim.keymap.set("n", "<leader>xL", "<cmd>Trouble loclist toggle<cr>", { desc = "Location list" })
+vim.keymap.set("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix list" })
+vim.keymap.set("n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "Buffer diagnostics" })
+
+vim.keymap.set("n", "<leader>z", function()
+  vim.cmd("10split | terminal")
+end, { desc = "Open terminal in bottom split" })
+
+vim.keymap.set("n", "<leader>r", ":restart<CR><CR>", { desc = "Restart Nvim" })
+vim.keymap.set("n", "<leader>?", function()
+  require("which-key").show({ global = false })
+end, { desc = "Buffer keymaps" })
 
 -- Which-key
 require("which-key").setup({
   preset = "helix",
   sort = { "manual" },
   spec = {
-    { "<leader>d",  group = "debug",       mode = { "n", "v" } },
     { "<leader>b",  group = "buffer",      mode = { "n", "v" } },
     { "<leader>c",  group = "code",        mode = { "n", "v" } },
+    { "<leader>d",  group = "debug",       mode = { "n", "v" } },
+    { "<leader>e",  desc = "File explorer", mode = { "n", "v" } },
     { "<leader>f",  group = "file/find",   mode = { "n", "v" } },
     { "<leader>g",  group = "git",         mode = { "n", "v" } },
     { "<leader>gh", group = "hunks",       mode = { "n", "v" } },
-    { "<leader>r",  group = "rename",      mode = { "n", "v" } },
-    { "<leader>s",  group = "search",      mode = { "n", "v" } },
     { "<leader>q",  group = "session",     mode = { "n", "v" } },
-    { "<leader>x",  group = "diagnostics", mode = { "n", "v" } },
-    { "<leader>R",  desc = "Restart Nvim", mode = { "n", "v" } },
+    { "<leader>r",  desc = "Restart Nvim", mode = { "n", "v" } },
+    { "<leader>s",  group = "search",      mode = { "n", "v" } },
+    { "<leader>sn", group = "noice",       mode = { "n", "v" } },
+    { "<leader>st", desc = "Todo comments", mode = { "n", "v" } },
+    { "<leader>sx", desc = "Swap next parameter", mode = { "n", "v" } },
+    { "<leader>sX", desc = "Swap previous parameter", mode = { "n", "v" } },
+    { "<leader>u",  desc = "Undotree",     mode = { "n", "v" } },
     { "<leader>w",  group = "windows",     proxy = "<c-w>",
       expand = function() return require("which-key.extras").expand.win() end },
+    { "<leader>x",  group = "diagnostics", mode = { "n", "v" } },
+    { "<leader>z",  desc = "Open terminal in bottom split", mode = { "n", "v" } },
+    { "<leader>?",  desc = "Buffer keymaps", mode = { "n", "v" } },
+    { "g", group = "goto" },
     { "[", group = "prev" },
     { "]", group = "next" },
-    { "g", group = "goto" },
   },
 })
-
-vim.keymap.set("n", "<leader>?", function()
-  require("which-key").show({ global = false })
-end, { desc = "Buffer keymaps" })
 
 -- Todo comments
 require("todo-comments").setup()
 
 vim.keymap.set("n", "]t",         function() require("todo-comments").jump_next() end, { desc = "Next todo" })
 vim.keymap.set("n", "[t",         function() require("todo-comments").jump_prev() end, { desc = "Prev todo" })
-vim.keymap.set("n", "<leader>st", function() Snacks.picker.todo_comments() end,        { desc = "Todo comments" })
 
 -- Trouble
 require("trouble").setup()
-
-vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>",                        { desc = "Diagnostics" })
-vim.keymap.set("n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",           { desc = "Buffer diagnostics" })
-vim.keymap.set("n", "<leader>xL", "<cmd>Trouble loclist toggle<cr>",                            { desc = "Location list" })
-vim.keymap.set("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>",                             { desc = "Quickfix list" })
-vim.keymap.set("n", "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>",                { desc = "Symbols" })
-vim.keymap.set("n", "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", { desc = "LSP definitions/references" })
