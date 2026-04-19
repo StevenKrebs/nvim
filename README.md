@@ -76,6 +76,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 - **DAP** — JS/TS debugging with sourcemap support via nvim-dap + vscode-js-debug (`<leader>d`)
 - **Session persistence** — auto-save/restore via persistence.nvim
 - **Enhanced UI** — noice.nvim for cleaner cmdline and messages; Snacks dashboard with hidden statusline
+- **Column guide** — defaults to column `100`; `<leader>h` cycles the guide through `off`, `72`, `80`, `100`, and `120`
 - **Kanagawa colorscheme** — wave variant with transparent background
 - **which-key** — press `?` in any buffer to browse available keymaps
 
@@ -125,6 +126,12 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | Key          | Action                        |
 | ------------ | ----------------------------- |
 | `<leader>z`  | Open bottom terminal split    |
+
+### UI
+
+| Key          | Action                                                  |
+| ------------ | ------------------------------------------------------- |
+| `<leader>h`  | Cycle `colorcolumn`: `off` -> `72` -> `80` -> `100` -> `120` |
 
 ### Completion (Insert Mode)
 
