@@ -24,7 +24,7 @@ vim.pack.add({
 	"https://github.com/folke/snacks.nvim",
 
 	-- LSP / completion / syntax
-	"https://github.com/Saghen/blink.cmp",
+	{ src = "https://github.com/Saghen/blink.cmp", version = vim.version.range("1") },
 	"https://github.com/stevearc/conform.nvim",
 	"https://github.com/mfussenegger/nvim-lint",
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
@@ -53,8 +53,6 @@ vim.pack.add({
 	"https://github.com/folke/which-key.nvim",
 	"https://github.com/folke/todo-comments.nvim",
 	"https://github.com/folke/trouble.nvim",
-	"https://github.com/folke/noice.nvim",
-	"https://github.com/MunifTanjim/nui.nvim",
 })
 
 -- Built-in optional packages
@@ -90,7 +88,11 @@ require("mini.ai").setup()
 
 require("snacks").setup({
 	indent = { enabled = true },
-	notifier = { enabled = true },
+	notifier = {
+		enabled = true,
+		top_down = false,
+		margin = { top = 0, right = 1, bottom = 1 },
+	},
 	dashboard = {
 		sections = {
 			{ section = "header" },
@@ -180,6 +182,8 @@ opt.pumheight = 10
 opt.splitbelow = true
 opt.splitright = true
 opt.laststatus = 3 -- global statusline
+opt.cmdheight = 0
+opt.shortmess:append("W")
 
 -- Editing
 opt.tabstop = 4
@@ -217,6 +221,325 @@ opt.updatetime = 300
 opt.synmaxcol = 300
 opt.redrawtime = 10000
 opt.timeoutlen = 300
+
+local function format_bytes(bytes)
+	if not bytes or bytes < 1024 then
+		return ("%dB"):format(bytes or 0)
+	end
+
+	local size = bytes / 1024
+	for _, unit in ipairs({ "K", "M", "G", "T" }) do
+		if size < 1024 or unit == "T" then
+			return size >= 10 and ("%d%s"):format(math.floor(size + 0.5), unit) or ("%.1f%s"):format(size, unit)
+		end
+		size = size / 1024
+	end
+end
+
+local function split_output(text)
+	text = vim.trim(text or "")
+	return text == "" and {} or vim.split(text, "\n", { plain = true })
+end
+
+local message_ui = {}
+
+function message_ui.show(title, lines, opts)
+	lines = type(lines) == "string" and split_output(lines) or lines
+	if not lines or vim.tbl_isempty(lines) then
+		lines = { "No output" }
+	end
+
+	return Snacks.win(vim.tbl_deep_extend("force", {
+		position = "bottom",
+		height = 0.35,
+		width = 0.9,
+		enter = true,
+		minimal = false,
+		backdrop = false,
+		border = "rounded",
+		title = (" %s "):format(title),
+		ft = "markdown",
+		text = lines,
+		bo = {
+			buftype = "nofile",
+			bufhidden = "wipe",
+			buflisted = false,
+			swapfile = false,
+		},
+		wo = {
+			wrap = false,
+			spell = false,
+			number = false,
+			relativenumber = false,
+			signcolumn = "no",
+			statuscolumn = "",
+		},
+	}, opts or {}))
+end
+
+function message_ui.messages()
+	local ok, result = pcall(vim.api.nvim_exec2, "messages", { output = true })
+	return ok and (result.output or "") or ""
+end
+
+function message_ui.show_history()
+	return message_ui.show("Message History", message_ui.messages(), { ft = "vim" })
+end
+
+function message_ui.show_last()
+	local lines = split_output(message_ui.messages())
+	return message_ui.show("Last Message", { lines[#lines] or "No messages" }, {
+		ft = "text",
+		height = 0.2,
+		width = 0.6,
+	})
+end
+
+function message_ui.notification_lines()
+	local lines = {}
+	for _, notif in ipairs(Snacks.notifier.get_history({ reverse = true })) do
+		local header = ("[%s] %s"):format(os.date("%R", notif.added), notif.level:upper())
+		if notif.title and notif.title ~= "" then
+			header = ("%s %s"):format(header, notif.title)
+		end
+		table.insert(lines, header)
+		vim.list_extend(lines, vim.split(notif.msg, "\n", { plain = true }))
+		table.insert(lines, "")
+	end
+	return lines
+end
+
+function message_ui.show_all()
+	local lines = {}
+	local messages = split_output(message_ui.messages())
+	local notifications = message_ui.notification_lines()
+
+	if not vim.tbl_isempty(messages) then
+		vim.list_extend(lines, { "# Messages", "" })
+		vim.list_extend(lines, messages)
+	end
+
+	if not vim.tbl_isempty(notifications) then
+		if not vim.tbl_isempty(lines) then
+			table.insert(lines, "")
+		end
+		vim.list_extend(lines, { "# Notifications", "" })
+		vim.list_extend(lines, notifications)
+	end
+
+	return message_ui.show("Editor Activity", lines)
+end
+
+function message_ui.dismiss()
+	Snacks.notifier.hide()
+end
+
+function message_ui.redirect_cmdline()
+	local cmdtype = vim.fn.getcmdtype()
+	local cmdline = vim.trim(vim.fn.getcmdline())
+
+	if cmdtype ~= ":" or cmdline == "" then
+		return "<CR>"
+	end
+
+		vim.schedule(function()
+			local ok, result = pcall(vim.api.nvim_exec2, cmdline, { output = true })
+			if not ok then
+				vim.notify(tostring(result), vim.log.levels.ERROR, {
+					title = "Command failed",
+				})
+				return
+			end
+
+		local output = split_output(result.output)
+		if vim.tbl_isempty(output) then
+			vim.notify(("Executed: %s"):format(cmdline), vim.log.levels.INFO, {
+				title = "Command",
+				timeout = 1200,
+			})
+			return
+		end
+
+		message_ui.show(cmdline, output, { ft = "vim" })
+	end)
+
+	return "<C-c>"
+end
+
+local notification_ui = {}
+
+local lsp_notification_progress = vim.defaulttable(function()
+	return {}
+end)
+
+local lsp_notification_spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+
+local function lsp_notification_title(client)
+	local root = client and (client.root_dir or client.config.root_dir) or nil
+	local project = root and vim.fn.fnamemodify(root, ":t") or nil
+	return project and ("%s · %s"):format(client.name, project) or client.name
+end
+
+function notification_ui.lsp_progress(client, token, value)
+	if not client or type(value) ~= "table" then
+		return
+	end
+
+	local progress = lsp_notification_progress[client.id]
+	for i = 1, #progress + 1 do
+		if i == #progress + 1 or progress[i].token == token then
+			local message = value.message and (" %s"):format(value.message) or ""
+			progress[i] = {
+				token = token,
+				msg = ("[%3d%%] %s%s"):format(value.kind == "end" and 100 or value.percentage or 100, value.title or "", message),
+				done = value.kind == "end",
+			}
+			break
+		end
+	end
+
+	local lines = {} ---@type string[]
+	lsp_notification_progress[client.id] = vim.tbl_filter(function(item)
+		table.insert(lines, item.msg)
+		return not item.done
+	end, progress)
+
+	local complete = #lsp_notification_progress[client.id] == 0
+	vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, {
+		id = "lsp-progress:" .. client.id,
+		title = lsp_notification_title(client),
+		timeout = complete and 1500 or false,
+		opts = function(notif)
+			notif.icon = complete and " " or lsp_notification_spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #lsp_notification_spinner + 1]
+		end,
+	})
+end
+
+function notification_ui.lsp_attached(client, bufnr)
+	if not client then
+		return
+	end
+
+	local bufname = vim.api.nvim_buf_get_name(bufnr)
+	vim.notify(
+		bufname == "" and "LSP attached" or ("Attached to %s"):format(vim.fn.fnamemodify(bufname, ":t")),
+		vim.log.levels.INFO,
+		{
+			id = ("lsp-attach:%d:%d"):format(client.id, bufnr),
+			title = client.name,
+			timeout = 1200,
+		}
+	)
+end
+
+local function find_float()
+	local current = vim.api.nvim_get_current_win()
+	local floats = {}
+
+	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+		local config = vim.api.nvim_win_get_config(win)
+		if config.relative ~= "" then
+			table.insert(floats, {
+				win = win,
+				current = win == current and 1 or 0,
+				zindex = config.zindex or 0,
+			})
+		end
+	end
+
+	table.sort(floats, function(a, b)
+		if a.current ~= b.current then
+			return a.current > b.current
+		end
+		if a.zindex ~= b.zindex then
+			return a.zindex > b.zindex
+		end
+		return a.win > b.win
+	end)
+
+	return floats[1] and floats[1].win or nil
+end
+
+local function scroll_float(delta)
+	local win = find_float()
+	if not win then
+		return false
+	end
+
+	local buf = vim.api.nvim_win_get_buf(win)
+	local cursor = vim.api.nvim_win_get_cursor(win)
+	local line = math.max(1, math.min(vim.api.nvim_buf_line_count(buf), cursor[1] + delta))
+	if line == cursor[1] then
+		return true
+	end
+
+	vim.api.nvim_win_set_cursor(win, { line, cursor[2] })
+	return true
+end
+
+local ok_ui2, ui2 = pcall(require, "vim._core.ui2")
+if ok_ui2 then
+	ui2.enable({
+		enable = true,
+		msg = {
+			targets = {
+				[""] = "msg",
+				empty = "cmd",
+				bufwrite = "msg",
+				confirm = "cmd",
+				emsg = "pager",
+				echo = "msg",
+				echomsg = "msg",
+				echoerr = "pager",
+				completion = "cmd",
+				list_cmd = "pager",
+				lua_error = "pager",
+				lua_print = "msg",
+				progress = "pager",
+				rpc_error = "pager",
+				quickfix = "msg",
+				search_cmd = "cmd",
+				search_count = "cmd",
+				shell_cmd = "pager",
+				shell_err = "pager",
+				shell_out = "pager",
+				shell_ret = "msg",
+				undo = "msg",
+				verbose = "pager",
+				wildlist = "cmd",
+				wmsg = "msg",
+				typed_cmd = "cmd",
+			},
+			cmd = { height = 0.5 },
+			dialog = { height = 0.5 },
+			msg = { height = 0.3, timeout = 5000 },
+			pager = { height = 0.5 },
+		},
+	})
+end
+
+vim.api.nvim_create_autocmd("BufWritePost", {
+	group = vim.api.nvim_create_augroup("custom_message_ui", { clear = true }),
+	callback = function(args)
+		if vim.bo[args.buf].buftype ~= "" then
+			return
+		end
+
+		local name = vim.api.nvim_buf_get_name(args.buf)
+		if name == "" then
+			return
+		end
+
+		local stat = vim.uv.fs_stat(name)
+		local label = vim.fn.fnamemodify(name, ":~:.")
+		local lines = vim.api.nvim_buf_line_count(args.buf)
+		vim.notify(("%s  %dL  %s"):format(label, lines, format_bytes(stat and stat.size or 0)), vim.log.levels.INFO, {
+			id = "bufwrite:" .. name,
+			title = "Saved",
+			timeout = 1200,
+		})
+	end,
+})
 
 -- Terminal
 vim.keymap.set("t", "<Esc>", function()
@@ -406,6 +729,13 @@ local function lsp_complete()
 	end, vim.lsp.get_clients({ bufnr = 0 }))
 end
 
+vim.api.nvim_create_autocmd("LspProgress", {
+	callback = function(ev)
+		local client = vim.lsp.get_client_by_id(ev.data.client_id)
+		notification_ui.lsp_progress(client, ev.data.params.token, ev.data.params.value)
+	end,
+})
+
 vim.api.nvim_create_user_command("LspStop", function(opts)
 	local name = opts.args ~= "" and opts.args or nil
 	for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0, name = name })) do
@@ -488,6 +818,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		if client and client:supports_method("textDocument/documentSymbol") then
 			require("nvim-navic").attach(client, ev.buf)
 		end
+
+		notification_ui.lsp_attached(client, ev.buf)
 	end,
 })
 
@@ -819,45 +1151,16 @@ require("lualine").setup({
 	extensions = { "fzf" },
 })
 
--- Noice
-require("noice").setup({
-	lsp = {
-		hover = {
-			enabled = false,
-		},
-	},
-	routes = {
-		{
-			filter = {
-				event = "msg_show",
-				any = {
-					{ find = "%d+L, %d+B" },
-					{ find = "; after #%d+" },
-					{ find = "; before #%d+" },
-				},
-			},
-			view = "mini",
-		},
-	},
-	presets = {
-		bottom_search = true,
-		command_palette = true,
-		long_message_to_split = true,
-	},
-})
-
-vim.keymap.set("c", "<S-Enter>", function()
-	require("noice").redirect(vim.fn.getcmdline())
-end, { desc = "Redirect cmdline" })
+vim.keymap.set("c", "<S-Enter>", message_ui.redirect_cmdline, { expr = true, desc = "Redirect cmdline" })
 
 vim.keymap.set({ "i", "n", "s" }, "<c-f>", function()
-	if not require("noice.lsp").scroll(4) then
+	if not scroll_float(4) then
 		return "<c-f>"
 	end
 end, { silent = true, expr = true, desc = "Scroll forward" })
 
 vim.keymap.set({ "i", "n", "s" }, "<c-b>", function()
-	if not require("noice.lsp").scroll(-4) then
+	if not scroll_float(-4) then
 		return "<c-b>"
 	end
 end, { silent = true, expr = true, desc = "Scroll backward" })
@@ -1136,18 +1439,18 @@ vim.keymap.set("n", "<leader>qs", function()
 	require("persistence").load()
 end, { desc = "Restore session" })
 
-vim.keymap.set("n", "<leader>sn", "", { desc = "+noice" })
+vim.keymap.set("n", "<leader>sn", "", { desc = "+messages" })
 vim.keymap.set("n", "<leader>sna", function()
-	require("noice").cmd("all")
+	message_ui.show_all()
 end, { desc = "All" })
 vim.keymap.set("n", "<leader>snd", function()
-	require("noice").cmd("dismiss")
+	message_ui.dismiss()
 end, { desc = "Dismiss all" })
 vim.keymap.set("n", "<leader>snh", function()
-	require("noice").cmd("history")
+	message_ui.show_history()
 end, { desc = "History" })
 vim.keymap.set("n", "<leader>snl", function()
-	require("noice").cmd("last")
+	message_ui.show_last()
 end, { desc = "Last message" })
 vim.keymap.set("n", "<leader>st", function()
 	Snacks.picker.todo_comments()
@@ -1185,7 +1488,7 @@ require("which-key").setup({
 		{ "<leader>q", group = "session", mode = { "n", "v" } },
 		{ "<leader>r", desc = "Restart Nvim", mode = { "n", "v" } },
 		{ "<leader>s", group = "search", mode = { "n", "v" } },
-		{ "<leader>sn", group = "noice", mode = { "n", "v" } },
+		{ "<leader>sn", group = "messages", mode = { "n", "v" } },
 		{ "<leader>st", desc = "Todo comments", mode = { "n", "v" } },
 		{ "<leader>sx", desc = "Swap next parameter", mode = { "n", "v" } },
 		{ "<leader>sX", desc = "Swap previous parameter", mode = { "n", "v" } },

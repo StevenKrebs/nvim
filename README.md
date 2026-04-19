@@ -75,23 +75,41 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 - **Git** — gitsigns, fugitive, lazygit, and Snacks git pickers
 - **DAP** — JS/TS debugging with sourcemap support via nvim-dap + vscode-js-debug (`<leader>d`)
 - **Session persistence** — auto-save/restore via persistence.nvim
-- **Enhanced UI** — noice.nvim for cleaner cmdline and messages; Snacks dashboard with hidden statusline; Variable column guide
+- **Enhanced UI** — native Neovim `ui2` cmdline/messages with custom message history helpers; Snacks dashboard with hidden statusline; Variable column guide
 - **Kanagawa colorscheme** — wave variant with transparent background
 - **which-key** — press `?` in any buffer to browse available keymaps
 
 ## Plugins
 
-| Category   | Plugin                                                                                                 |
-| ---------- | ------------------------------------------------------------------------------------------------------ |
-| UI         | kanagawa.nvim, bufferline.nvim, lualine.nvim, noice.nvim, which-key.nvim, render-markdown.nvim         |
-| Navigation | snacks.nvim (picker, dashboard, lazygit, notifier, indent), flash.nvim, nvim-navic                     |
-| LSP        | blink.cmp, conform.nvim, nvim-lint                                                                     |
-| Syntax     | nvim-treesitter, nvim-treesitter-textobjects                                                           |
-| Git        | gitsigns.nvim, vim-fugitive                                                                            |
-| Debug      | nvim-dap, nvim-dap-ui, nvim-dap-virtual-text, nvim-nio                                                 |
-| Editing    | mini.nvim (icons, pairs, surround, ai), Comment.nvim, vim-illuminate, todo-comments.nvim, trouble.nvim |
-| Sessions   | persistence.nvim                                                                                       |
-| Built-in   | nvim.undotree, nvim.difftool                                                                           |
+| Plugin                     | Purpose in this config                                                      |
+| -------------------------- | --------------------------------------------------------------------------- |
+| `mini.nvim`                | Icons mock for plugin compatibility, plus pairs, surround, and text objects |
+| `snacks.nvim`              | Dashboard, picker, explorer, notifier, git helpers, lazygit, and indent UI  |
+| `blink.cmp`                | Completion engine with ghost text and documentation popups                  |
+| `conform.nvim`             | Format-on-save and manual formatting                                        |
+| `nvim-lint`                | External linter integration                                                 |
+| `nvim-treesitter`          | Syntax highlighting and parser-backed editing                               |
+| `nvim-treesitter-textobjects` | Treesitter text objects and parameter swapping                           |
+| `gitsigns.nvim`            | Inline git hunks and hunk actions                                           |
+| `Comment.nvim`             | Comment toggling                                                            |
+| `vim-fugitive`             | Git commands and diff workflow                                              |
+| `persistence.nvim`         | Session save and restore                                                    |
+| `nvim-dap`                | Core debug adapter protocol support                                         |
+| `nvim-nio`                | Async dependency for DAP UI                                                 |
+| `nvim-dap-ui`             | Debug panels and controls                                                   |
+| `nvim-dap-virtual-text`   | Inline variable values while debugging                                      |
+| `kanagawa.nvim`            | Colorscheme                                                                 |
+| `bufferline.nvim`          | Buffer tabs                                                                 |
+| `lualine.nvim`             | Statusline                                                                  |
+| `nvim-navic`               | LSP breadcrumbs in the statusline                                           |
+| `vim-illuminate`           | Repeated symbol highlighting                                                |
+| `render-markdown.nvim`     | Rich markdown rendering                                                     |
+| `flash.nvim`               | Fast jump motion and treesitter selection                                   |
+| `which-key.nvim`           | Keymap discovery                                                            |
+| `todo-comments.nvim`       | TODO/FIXME highlighting and navigation                                      |
+| `trouble.nvim`             | Diagnostics, quickfix, and location list UI                                 |
+| `nvim.undotree`            | Built-in optional undo history viewer                                       |
+| `nvim.difftool`            | Built-in optional diff helper                                               |
 
 ## Key Bindings
 
@@ -191,11 +209,12 @@ Requires `js-debug` (`vscode-js-debug`) on PATH. Sourcemaps are enabled — stac
 
 | Key               | Action                              |
 | ----------------- | ----------------------------------- |
-| `<leader>snl`     | Last message                        |
+| `<leader>snl`     | Last editor message                 |
 | `<leader>snh`     | Message history                     |
-| `<leader>sna`     | All messages                        |
-| `<leader>snd`     | Dismiss all messages                |
-| `<C-f>` / `<C-b>` | Scroll hover doc forward / backward |
+| `<leader>sna`     | Messages + notification history     |
+| `<leader>snd`     | Dismiss active notifications        |
+| `<S-Enter>`       | Run command-line command in a split |
+| `<C-f>` / `<C-b>` | Scroll the active floating window   |
 
 ### Motion
 
