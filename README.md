@@ -26,26 +26,26 @@ LSP server configs live in `lsp/<name>.lua` — no plugin required. Neovim 0.12'
 
 LSP servers must be installed manually (e.g. via Nix). Formatters and linters are only needed for the languages you use:
 
-| Language          | Formatter      | Linter       | LSP                                                                |
-| ----------------- | -------------- | ------------ | ------------------------------------------------------------------ |
-| Nix               | `nixfmt`       | `statix`     | `nixd`                                                             |
-| Python            | `ruff`         | `ruff`       | `basedpyright`                                                     |
-| Lua               | `stylua`       | —            | `lua-language-server`                                              |
-| Shell             | `shfmt`        | `shellcheck` | —                                                                  |
-| Rust              | —              | —            | `rust-analyzer`                                                    |
-| Go                | —              | —            | `gopls`                                                            |
-| JS/TS             | `prettier`     | —            | `typescript-language-server`                                       |
+| Language          | Formatter      | Linter       | LSP                                                                      |
+| ----------------- | -------------- | ------------ | ------------------------------------------------------------------------ |
+| Nix               | `nixfmt`       | `statix`     | `nixd`                                                                   |
+| Python            | `ruff`         | `ruff`       | `basedpyright`                                                           |
+| Lua               | `stylua`       | —            | `lua-language-server`                                                    |
+| Shell             | `shfmt`        | `shellcheck` | —                                                                        |
+| Rust              | —              | —            | `rust-analyzer`                                                          |
+| Go                | —              | —            | `gopls`                                                                  |
+| JS/TS             | `prettier`     | —            | `typescript-language-server`                                             |
 | JSON/YAML/HTML/MD | `prettier`     | —            | `vscode-langservers-extracted`, `yaml-language-server`, `markdown-oxide` |
-| CSS / Tailwind    | `prettier`     | —            | `vscode-langservers-extracted`, `tailwindcss`                      |
-| TOML              | `taplo`        | —            | `taplo`                                                            |
-| C/C++             | `clang-format` | —            | `clangd`                                                           |
-| Ruby              | `rubocop`      | `rubocop`    | `ruby-lsp`                                                         |
-| Perl              | `perltidy`     | `perlcritic` | `perlls`                                                           |
-| PHP               | —              | —            | `intelephense`                                                     |
-| SQL               | —              | —            | `sqls`                                                             |
-| Java              | —              | —            | `jdtls`                                                            |
-| Zig               | `zig fmt`      | —            | `zls`                                                              |
-| Dockerfile        | —              | —            | `dockerfile-language-server`                                       |
+| CSS / Tailwind    | `prettier`     | —            | `vscode-langservers-extracted`, `tailwindcss`                            |
+| TOML              | `taplo`        | —            | `taplo`                                                                  |
+| C/C++             | `clang-format` | —            | `clangd`                                                                 |
+| Ruby              | `rubocop`      | `rubocop`    | `ruby-lsp`                                                               |
+| Perl              | `perltidy`     | `perlcritic` | `perlls`                                                                 |
+| PHP               | —              | —            | `intelephense`                                                           |
+| SQL               | —              | —            | `sqls`                                                                   |
+| Java              | —              | —            | `jdtls`                                                                  |
+| Zig               | `zig fmt`      | —            | `zls`                                                                    |
+| Dockerfile        | —              | —            | `dockerfile-language-server`                                             |
 
 ### DAP
 
@@ -75,8 +75,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 - **Git** — gitsigns, fugitive, lazygit, and Snacks git pickers
 - **DAP** — JS/TS debugging with sourcemap support via nvim-dap + vscode-js-debug (`<leader>d`)
 - **Session persistence** — auto-save/restore via persistence.nvim
-- **Enhanced UI** — noice.nvim for cleaner cmdline and messages; Snacks dashboard with hidden statusline
-- **Column guide** — defaults to column `100`; `<leader>h` cycles the guide through `off`, `72`, `80`, `100`, and `120`
+- **Enhanced UI** — noice.nvim for cleaner cmdline and messages; Snacks dashboard with hidden statusline; Variable column guide
 - **Kanagawa colorscheme** — wave variant with transparent background
 - **which-key** — press `?` in any buffer to browse available keymaps
 
@@ -123,25 +122,25 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 
 ### Terminal
 
-| Key          | Action                        |
-| ------------ | ----------------------------- |
-| `<leader>z`  | Open bottom terminal split    |
+| Key         | Action                     |
+| ----------- | -------------------------- |
+| `<leader>z` | Open bottom terminal split |
 
 ### UI
 
-| Key          | Action                                                  |
-| ------------ | ------------------------------------------------------- |
-| `<leader>h`  | Cycle `colorcolumn`: `off` -> `72` -> `80` -> `100` -> `120` |
+| Key         | Action                                                                 |
+| ----------- | ---------------------------------------------------------------------- |
+| `<leader>h` | Cycle `colorcolumn`: `off` -> `72` -> `80` -> `100` (default) -> `120` |
 
 ### Completion (Insert Mode)
 
-| Key          | Action                         |
-| ------------ | ------------------------------ |
-| `<Tab>`      | Next suggestion                |
-| `<S-Tab>`    | Previous suggestion            |
-| `<CR>`       | Accept suggestion              |
-| `<C-e>`      | Dismiss                        |
-| `<C-Space>`  | Trigger completion manually    |
+| Key         | Action                      |
+| ----------- | --------------------------- |
+| `<Tab>`     | Next suggestion             |
+| `<S-Tab>`   | Previous suggestion         |
+| `<CR>`      | Accept suggestion           |
+| `<C-e>`     | Dismiss                     |
+| `<C-Space>` | Trigger completion manually |
 
 ### Code (`<leader>c` / LSP)
 
