@@ -434,6 +434,50 @@ vim.api.nvim_create_autocmd({ "CmdlineEnter", "CmdlineLeave" }, {
 	callback = refresh_sidebar_tabline_layout,
 })
 
+local function smart_window_quit()
+	local explorer = Snacks.picker.get({ source = "explorer", tab = false })[1]
+	if not explorer then
+		vim.cmd("close")
+		return
+	end
+
+	local current = vim.api.nvim_get_current_win()
+	if explorer:current_win() then
+		explorer:close()
+		return
+	end
+
+	local explorer_wins = {}
+	for _, win in pairs(explorer.layout.wins or {}) do
+		if win.win and vim.api.nvim_win_is_valid(win.win) then
+			explorer_wins[win.win] = true
+		end
+	end
+	for _, win in pairs(explorer.layout.box_wins or {}) do
+		if win.win and vim.api.nvim_win_is_valid(win.win) then
+			explorer_wins[win.win] = true
+		end
+	end
+	if explorer.layout.root and explorer.layout.root.win and vim.api.nvim_win_is_valid(explorer.layout.root.win) then
+		explorer_wins[explorer.layout.root.win] = true
+	end
+
+	local editable_wins = {}
+	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+		local config = vim.api.nvim_win_get_config(win)
+		if config.relative == "" and not explorer_wins[win] then
+			table.insert(editable_wins, win)
+		end
+	end
+
+	if #editable_wins == 1 and editable_wins[1] == current then
+		Snacks.bufdelete()
+		return
+	end
+
+	vim.cmd("close")
+end
+
 map("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
 map("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
 map("n", "[b", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
@@ -690,6 +734,7 @@ map("n", "<leader>r", ":restart<CR><CR>", { desc = "Restart Nvim" })
 map("n", "<leader>?", function()
 	require("which-key").show({ global = false })
 end, { desc = "Buffer keymaps" })
+map("n", "<leader>wq", smart_window_quit, { desc = "Quit window" })
 
 -- Keymap discoverability
 
