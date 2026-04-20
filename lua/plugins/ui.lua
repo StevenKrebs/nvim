@@ -619,6 +619,33 @@ local function toggle_colorcolumn()
 	vim.notify("Colorcolumn: " .. label, vim.log.levels.INFO)
 end
 
+local function open_explorer()
+	local buf = vim.api.nvim_get_current_buf()
+	local file = vim.api.nvim_buf_get_name(buf)
+
+	if vim.bo[buf].buftype == "" and file ~= "" then
+		local root = Snacks.git.get_root(file) or vim.fs.dirname(file)
+		local explorer = Snacks.picker.get({ source = "explorer", tab = false })[1]
+
+		if explorer then
+			local actions = require("snacks.explorer.actions")
+			explorer:set_cwd(root)
+			actions.update(explorer, { target = file, refresh = true })
+			return
+		end
+
+		Snacks.picker.explorer({
+			cwd = root,
+			on_show = function(picker)
+				require("snacks.explorer.actions").update(picker, { target = file, refresh = true })
+			end,
+		})
+		return
+	end
+
+	Snacks.picker.explorer()
+end
+
 map("n", "<leader>bd", function()
 	Snacks.bufdelete()
 end, { desc = "Delete current buffer" })
@@ -628,9 +655,7 @@ map("n", "<leader>bp", "<cmd>BufferLineTogglePin<cr>", { desc = "Toggle pin" })
 map("n", "<leader>br", "<cmd>BufferLineCloseRight<cr>", { desc = "Delete buffers to the right" })
 map("n", "<leader>bP", "<cmd>BufferLineGroupClose ungrouped<cr>", { desc = "Delete non-pinned buffers" })
 
-map("n", "<leader>e", function()
-	Snacks.picker.explorer()
-end, { desc = "File explorer" })
+map("n", "<leader>e", open_explorer, { desc = "File explorer" })
 
 map("n", "<leader>fb", function()
 	Snacks.picker.buffers()
