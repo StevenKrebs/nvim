@@ -59,7 +59,9 @@ vim.cmd("packadd nvim.difftool")
 -- Work around Neovim 0.12 bug: MenuPopup assert error in vim/ui.lua _get_urls
 pcall(vim.api.nvim_clear_autocmds, { event = "MenuPopup", group = "nvim_defaults" })
 
-require("config.core")
-require("config.ui")
-require("config.lsp")
-require("config.dap")
+require("config.options")
+require("config.keymaps")
+require("config.autocmds")
+require("plugins.ui")
+require("plugins.lsp")
+require("plugins.dap")
