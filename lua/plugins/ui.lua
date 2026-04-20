@@ -734,6 +734,7 @@ map("n", "<leader>r", ":restart<CR><CR>", { desc = "Restart Nvim" })
 map("n", "<leader>?", function()
 	require("which-key").show({ global = false })
 end, { desc = "Buffer keymaps" })
+map("n", "<C-w>q", smart_window_quit, { desc = "Quit window" })
 map("n", "<leader>wq", smart_window_quit, { desc = "Quit window" })
 
 -- Keymap discoverability
