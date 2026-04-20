@@ -150,6 +150,35 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | ----------- | ---------------------------------------------------------------------- |
 | `<leader>h` | Cycle `colorcolumn`: `off` -> `72` -> `80` -> `100` (default) -> `120` |
 
+### Dashboard
+
+The Snacks dashboard is the startup screen. It shows a custom header, grouped actions, recent files, detected projects, and the current Neovim version in the footer.
+
+| Key | Action          |
+| --- | --------------- |
+| `n` | New file        |
+| `f` | Find file       |
+| `g` | Find text       |
+| `r` | Restore session |
+| `l` | Last session    |
+| `s` | Select session  |
+| `c` | Browse config   |
+| `u` | Update plugins  |
+| `q` | Quit            |
+
+Dashboard session actions use the default `persistence.nvim` behavior:
+- `r` restores the session for the current working directory, using branch-aware session files when available.
+- `l` restores the most recently saved session overall.
+- `s` opens `persistence.nvim`'s built-in session chooser.
+
+### Sessions (`<leader>q`)
+
+| Key          | Action                  |
+| ------------ | ----------------------- |
+| `<leader>qd` | Don't save session      |
+| `<leader>ql` | Restore last session    |
+| `<leader>qs` | Restore current session |
+
 ### Completion (Insert Mode)
 
 | Key         | Action                      |
