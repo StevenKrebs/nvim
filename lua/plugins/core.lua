@@ -38,12 +38,18 @@ require("snacks").setup({
 			{
 				title = "Sessions",
 				padding = 1,
-				{ icon = " ", key = "s", desc = "Restore Session", action = ":lua require('persistence').load()" },
+				{ icon = " ", key = "r", desc = "Restore Session", action = ":lua require('persistence').load()" },
 				{
 					icon = " ",
 					key = "l",
 					desc = "Last Session",
 					action = ":lua require('persistence').load({ last = true })",
+				},
+				{
+					icon = "󰱼 ",
+					key = "s",
+					desc = "Select Session",
+					action = ":lua require('persistence').select()",
 				},
 			},
 			{
