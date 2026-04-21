@@ -91,6 +91,39 @@ require("snacks").setup({
 				exclude = { ".DS_Store", "node_modules", ".git" },
 				auto_close = false,
 				jump = { close = false },
+				actions = {
+					toggle_preview_cycle = function(picker)
+						local layout = vim.deepcopy(picker.resolved_layout)
+						local hidden = layout.hidden or {}
+						local is_hidden = vim.tbl_contains(hidden, "preview")
+
+						hidden = vim.tbl_filter(function(win)
+							return win ~= "preview"
+						end, hidden)
+
+						if is_hidden then
+							-- no preview -> main preview
+							layout.hidden = hidden
+							layout.preview = "main"
+							vim.notify("Explorer preview: fullscreen", vim.log.levels.INFO)
+						else
+							-- main preview -> no preview
+							table.insert(hidden, "preview")
+							layout.hidden = hidden
+							layout.preview = nil
+							vim.notify("Explorer preview: hidden", vim.log.levels.INFO)
+						end
+
+						picker:set_layout(layout)
+					end,
+				},
+				win = {
+					list = {
+						keys = {
+							["P"] = "toggle_preview_cycle",
+						},
+					},
+				},
 			},
 			files = {
 				hidden = true,
