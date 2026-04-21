@@ -354,6 +354,8 @@ require("kanagawa").setup({
 			NormalFloat = { bg = "none" },
 			FloatBorder = { bg = "none" },
 			FloatTitle = { bg = "none" },
+			SnacksPickerPreviewBorder = { fg = theme.ui.special, bg = "none" },
+			SnacksPickerPreviewTitle = { fg = theme.ui.special, bg = "none", bold = true },
 			NormalDark = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m3 },
 			DiagnosticVirtualTextHint = diag_color(theme.diag.hint),
 			DiagnosticVirtualTextInfo = diag_color(theme.diag.info),

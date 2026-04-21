@@ -102,12 +102,12 @@ require("snacks").setup({
 						end, hidden)
 
 						if is_hidden then
-							-- no preview -> main preview
+							-- no preview -> centered overlay preview
 							layout.hidden = hidden
 							layout.preview = "main"
-							vim.notify("Explorer preview: fullscreen", vim.log.levels.INFO)
+							vim.notify("Explorer preview: floating", vim.log.levels.INFO)
 						else
-							-- main preview -> no preview
+							-- overlay preview -> no preview
 							table.insert(hidden, "preview")
 							layout.hidden = hidden
 							layout.preview = nil
@@ -122,6 +122,11 @@ require("snacks").setup({
 						keys = {
 							["P"] = "toggle_preview_cycle",
 						},
+					},
+					preview = {
+						border = "rounded",
+						title = "Preview of {preview}",
+						title_pos = "center",
 					},
 				},
 			},
