@@ -2,6 +2,49 @@ local dap = require("dap")
 local dapui = require("dapui")
 local map = vim.keymap.set
 
+local function executable(path)
+	return path ~= nil and path ~= "" and vim.fn.executable(path) == 1
+end
+
+local function unique_paths(paths)
+	local seen = {}
+	local result = {}
+
+	for _, path in ipairs(paths) do
+		if executable(path) and not seen[path] then
+			seen[path] = true
+			table.insert(result, path)
+		end
+	end
+
+	return result
+end
+
+local function project_python()
+	local cwd = vim.fn.getcwd()
+	local current_file = vim.api.nvim_buf_get_name(0)
+	local file_dir = current_file ~= "" and vim.fs.dirname(current_file) or nil
+
+	for _, path in ipairs(unique_paths({
+		vim.env.VIRTUAL_ENV and vim.fs.joinpath(vim.env.VIRTUAL_ENV, "bin", "python") or nil,
+		file_dir and vim.fs.joinpath(file_dir, ".venv", "bin", "python") or nil,
+		file_dir and vim.fs.joinpath(file_dir, "venv", "bin", "python") or nil,
+		vim.fs.joinpath(cwd, ".venv", "bin", "python"),
+		vim.fs.joinpath(cwd, "venv", "bin", "python"),
+		vim.fn.exepath("python3"),
+		vim.fn.exepath("python"),
+	})) do
+		return path
+	end
+
+	return "python3"
+end
+
+local function has_debugpy(python)
+	vim.fn.system({ python, "-c", "import debugpy" })
+	return vim.v.shell_error == 0
+end
+
 -- Adapter registration
 -- `js-debug` is provided externally, so the DAP layer only needs to point
 -- Neovim at the executable and declare the supported adapters.
@@ -20,6 +63,40 @@ dap.adapters["pwa-chrome"] = {
 	port = "${port}",
 	executable = { command = js_debug, args = { "${port}" } },
 }
+
+dap.adapters.python = function(callback)
+	for _, python in ipairs(unique_paths({
+		project_python(),
+		vim.fn.exepath("python3"),
+		vim.fn.exepath("python"),
+	})) do
+		if has_debugpy(python) then
+			callback({
+				type = "executable",
+				command = python,
+				args = { "-m", "debugpy.adapter" },
+			})
+			return
+		end
+	end
+
+	local uv = vim.fn.exepath("uv")
+	if uv ~= "" then
+		callback({
+			type = "executable",
+			command = uv,
+			args = { "run", "--with", "debugpy", "python", "-m", "debugpy.adapter" },
+		})
+		return
+	end
+
+	vim.notify(
+		("No Python interpreter with debugpy was found. Install it with `%s -m pip install debugpy`."):format(
+			project_python()
+		),
+		vim.log.levels.ERROR
+	)
+end
 
 -- JavaScript / TypeScript launch profiles
 -- Share the same adapter setup across JS, TS, and React variants.
@@ -52,6 +129,17 @@ for _, lang in ipairs({ "javascript", "typescript", "javascriptreact", "typescri
 		},
 	}
 end
+
+dap.configurations.python = {
+	{
+		type = "python",
+		request = "launch",
+		name = "Launch file (Python)",
+		program = "${file}",
+		cwd = "${fileDirname}",
+		pythonPath = project_python,
+	},
+}
 
 -- Session UI
 -- Keep the debug panels open only while a session is active.

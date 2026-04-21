@@ -41,6 +41,7 @@ vim.pack.add({
 	"https://github.com/SmiteshP/nvim-navic",
 	"https://github.com/stevearc/conform.nvim",
 	"https://github.com/mfussenegger/nvim-lint",
+	"https://github.com/nvim-lua/plenary.nvim",
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
 	"https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
 
@@ -49,6 +50,14 @@ vim.pack.add({
 	"https://github.com/nvim-neotest/nvim-nio",
 	"https://github.com/rcarriga/nvim-dap-ui",
 	"https://github.com/theHamsta/nvim-dap-virtual-text",
+
+	-- Tests (`plugins.test`)
+	"https://github.com/antoinemadec/FixCursorHold.nvim",
+	"https://github.com/nvim-neotest/neotest",
+	"https://github.com/nvim-neotest/neotest-python",
+	"https://github.com/nvim-neotest/neotest-jest",
+	"https://github.com/rouge8/neotest-rust",
+	"https://github.com/marilari88/neotest-vitest",
 })
 
 vim.cmd("packadd nvim.undotree")
@@ -103,3 +112,4 @@ require("plugins.core")
 require("plugins.ui")
 require("plugins.lsp")
 require("plugins.dap")
+require("plugins.test")

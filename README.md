@@ -74,6 +74,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 - **Treesitter** — syntax highlighting and text objects for 23 languages
 - **Git** — gitsigns, fugitive, lazygit, and Snacks git pickers
 - **DAP** — JS/TS debugging with sourcemap support via nvim-dap + vscode-js-debug (`<leader>d`)
+- **Tests** — neotest with adapters for Python, Rust, Jest, and Vitest (`<leader>t`)
 - **Session persistence** — auto-save/restore via persistence.nvim
 - **Enhanced UI** — native Neovim `ui2` cmdline/messages with custom message history helpers; Snacks dashboard with hidden statusline; Variable column guide
 - **Kanagawa colorscheme** — wave variant with transparent background
@@ -88,6 +89,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | `blink.cmp`                | Completion engine with ghost text and documentation popups                  |
 | `conform.nvim`             | Format-on-save and manual formatting                                        |
 | `nvim-lint`                | External linter integration                                                 |
+| `plenary.nvim`             | Async/job dependency used by neotest                                        |
 | `nvim-treesitter`          | Syntax highlighting and parser-backed editing                               |
 | `nvim-treesitter-textobjects` | Treesitter text objects and parameter swapping                           |
 | `gitsigns.nvim`            | Inline git hunks and hunk actions                                           |
@@ -98,6 +100,12 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | `nvim-nio`                | Async dependency for DAP UI                                                 |
 | `nvim-dap-ui`             | Debug panels and controls                                                   |
 | `nvim-dap-virtual-text`   | Inline variable values while debugging                                      |
+| `FixCursorHold.nvim`       | CursorHold timing fix required by neotest                                   |
+| `neotest`                  | Editor-native test runner UI                                                |
+| `neotest-python`           | Python test adapter (pytest / unittest)                                     |
+| `neotest-rust`             | Rust test adapter                                                           |
+| `neotest-jest`             | Jest adapter for JS / TS projects                                           |
+| `neotest-vitest`           | Vitest adapter for JS / TS projects                                         |
 | `kanagawa.nvim`            | Colorscheme                                                                 |
 | `bufferline.nvim`          | Buffer tabs                                                                 |
 | `lualine.nvim`             | Statusline                                                                  |
@@ -225,6 +233,22 @@ Requires `js-debug` (`vscode-js-debug`) on PATH. Sourcemaps are enabled — stac
 | `<F11>`      | Step into              |
 
 **Adapter configs (JS/TS):** Launch file (Node), Attach (Node), Launch Chrome (`http://localhost:3000`).
+
+### Test (`<leader>t`)
+
+Neotest is configured for Python, Rust, Jest, and Vitest. Rust runs use `cargo-nextest`. Debug runs reuse `nvim-dap` when the active adapter supports it.
+
+| Key          | Action                   |
+| ------------ | ------------------------ |
+| `<leader>ta` | Attach to test process   |
+| `<leader>td` | Debug nearest test       |
+| `<leader>tf` | Run file tests           |
+| `<leader>tn` | Run nearest test         |
+| `<leader>to` | Open last test output    |
+| `<leader>tO` | Toggle output panel      |
+| `<leader>tr` | Run project tests        |
+| `<leader>ts` | Toggle summary           |
+| `<leader>tx` | Stop tests               |
 
 ### Diagnostics (`<leader>x`)
 

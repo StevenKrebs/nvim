@@ -783,6 +783,7 @@ require("which-key").setup({
 		{ "<leader>st", desc = "Todo comments", mode = { "n", "v" } },
 		{ "<leader>sx", desc = "Swap next parameter", mode = { "n", "v" } },
 		{ "<leader>sX", desc = "Swap previous parameter", mode = { "n", "v" } },
+		{ "<leader>t", group = "test", mode = { "n", "v" } },
 		{ "<leader>u", desc = "Undotree", mode = { "n", "v" } },
 		{
 			"<leader>w",
