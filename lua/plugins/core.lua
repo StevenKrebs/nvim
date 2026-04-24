@@ -107,18 +107,16 @@ require("snacks").setup({
 							return win ~= "preview"
 						end, hidden)
 
-						if is_hidden then
-							-- no preview -> centered overlay preview
-							layout.hidden = hidden
-							layout.preview = "main"
-							vim.notify("Explorer preview: floating", vim.log.levels.INFO)
-						else
-							-- overlay preview -> no preview
-							table.insert(hidden, "preview")
-							layout.hidden = hidden
-							layout.preview = nil
-							vim.notify("Explorer preview: hidden", vim.log.levels.INFO)
-						end
+							if is_hidden then
+								-- no preview -> centered overlay preview
+								layout.hidden = hidden
+								layout.preview = "main"
+							else
+								-- overlay preview -> no preview
+								table.insert(hidden, "preview")
+								layout.hidden = hidden
+								layout.preview = nil
+							end
 
 						picker:set_layout(layout)
 					end,
