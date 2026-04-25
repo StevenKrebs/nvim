@@ -757,7 +757,6 @@ map("n", "<leader>z", function()
 	vim.cmd("10split | terminal")
 end, { desc = "Open terminal in bottom split" })
 
-map("n", "<leader>r", ":restart<CR><CR>", { desc = "Restart Nvim" })
 map("n", "<leader>?", function()
 	require("which-key").show({ global = false })
 end, { desc = "Buffer keymaps" })
@@ -779,7 +778,6 @@ require("which-key").setup({
 		{ "<leader>gh", group = "hunks", mode = { "n", "v" } },
 		{ "<leader>h", desc = "Cycle colorcolumn", mode = { "n", "v" } },
 		{ "<leader>q", group = "session", mode = { "n", "v" } },
-		{ "<leader>r", desc = "Restart Nvim", mode = { "n", "v" } },
 		{ "<leader>s", group = "search", mode = { "n", "v" } },
 		{ "<leader>sn", group = "messages", mode = { "n", "v" } },
 		{ "<leader>st", desc = "Todo comments", mode = { "n", "v" } },

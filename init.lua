@@ -20,7 +20,6 @@ vim.pack.add({
 	-- Core (`plugins.core`)
 	"https://github.com/echasnovski/mini.nvim",
 	"https://github.com/folke/snacks.nvim",
-	"https://github.com/Amansingh-afk/milli.nvim",
 
 	-- UI (`plugins.ui`)
 	"https://github.com/lewis6991/gitsigns.nvim",
