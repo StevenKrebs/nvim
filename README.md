@@ -78,7 +78,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 - **Session persistence** — auto-save/restore via persistence.nvim
 - **Enhanced UI** — native Neovim `ui2` cmdline/messages with custom message history helpers; Snacks dashboard with hidden statusline; Variable column guide
 - **Kanagawa colorscheme** — wave variant with transparent background
-- **which-key** — press `?` in any buffer to browse available keymaps
+- **which-key** — press `<leader>?` in any buffer to browse available keymaps
 
 ## Plugins
 
@@ -123,6 +123,19 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 
 `<leader>` is `Space`. `<localleader>` is `\`.
 
+### Buffers (`<leader>b` / `[b`)
+
+| Key                        | Action                    |
+| -------------------------- | ------------------------- |
+| `<leader>bd`               | Delete current buffer     |
+| `<leader>bj`               | Pick buffer               |
+| `<leader>bl` / `<leader>br` | Delete buffers left / right |
+| `<leader>bp`               | Toggle pin                |
+| `<leader>bP`               | Delete non-pinned buffers |
+| `[b` / `]b`                | Prev / next buffer        |
+| `[B` / `]B`                | Move buffer prev / next   |
+| `<S-h>` / `<S-l>`          | Prev / next buffer        |
+
 ### Find (`<leader>f`)
 
 | Key          | Action        |
@@ -144,7 +157,24 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | `<leader>gb` / `<leader>gf` | Git blame / file history |
 | `<leader>gB` / `<leader>gY` | Browse (open / copy URL) |
 | `<leader>gc` / `<leader>gd` | Fugitive commit / diff   |
-| `<leader>gh*`               | Gitsigns hunk operations |
+| `<leader>gD`               | Git diff split           |
+| `<leader>gt`               | Diff tool                |
+| `<leader>gw`               | Git write (stage)        |
+
+Git hunk shortcuts:
+
+| Key                         | Action                       |
+| --------------------------- | ---------------------------- |
+| `]h` / `[h`                 | Next / prev hunk             |
+| `]H` / `[H`                 | Last / first hunk            |
+| `<leader>ghb`               | Blame line                   |
+| `<leader>ghd`               | Diff this                    |
+| `<leader>ghp`               | Preview hunk                 |
+| `<leader>ghr` / `<leader>ghs` | Reset / stage hunk         |
+| `<leader>ghu`               | Undo stage hunk              |
+| `<leader>ghD`               | Diff this against `~`        |
+| `<leader>ghR` / `<leader>ghS` | Reset / stage buffer       |
+| `ih`                        | Select hunk text object      |
 
 ### Terminal
 
@@ -157,6 +187,16 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | Key         | Action                                                                 |
 | ----------- | ---------------------------------------------------------------------- |
 | `<leader>h` | Cycle `colorcolumn`: `off` -> `72` -> `80` -> `100` (default) -> `120` |
+| `<leader>u` | Undotree                                                               |
+| `<leader>?` | Buffer-local keymaps                                                   |
+
+### Windows
+
+| Key             | Action             |
+| --------------- | ------------------ |
+| `<C-h/j/k/l>`   | Move across splits |
+| `<C-w>q`        | Quit window        |
+| `<leader>wq`    | Quit window        |
 
 ### Dashboard
 
@@ -202,7 +242,9 @@ Dashboard session actions use the default `persistence.nvim` behavior:
 | Key          | Action                 |
 | ------------ | ---------------------- |
 | `<leader>ca` | Code action            |
-| `<leader>rn` | Rename symbol          |
+| `<leader>cl` | LSP definitions / references |
+| `<leader>cr` | Rename symbol          |
+| `<leader>cs` | Symbols                |
 | `gd`         | Go to definition       |
 | `gD`         | Go to declaration      |
 | `gr`         | References             |
@@ -240,11 +282,11 @@ Neotest is configured for Python, Rust, Jest, and Vitest. Rust runs use `cargo-n
 
 | Key          | Action                   |
 | ------------ | ------------------------ |
-| `<leader>ta` | Attach to test process   |
+| `<leader>ta` | Attach to test           |
 | `<leader>td` | Debug nearest test       |
 | `<leader>tf` | Run file tests           |
 | `<leader>tn` | Run nearest test         |
-| `<leader>to` | Open last test output    |
+| `<leader>to` | Open test output         |
 | `<leader>tO` | Toggle output panel      |
 | `<leader>tr` | Run project tests        |
 | `<leader>ts` | Toggle summary           |
@@ -266,17 +308,24 @@ Neotest is configured for Python, Rust, Jest, and Vitest. Rust runs use `cargo-n
 | `<leader>snh`     | Message history                     |
 | `<leader>sna`     | Messages + notification history     |
 | `<leader>snd`     | Dismiss active notifications        |
-| `<S-Enter>`       | Run command-line command in a split |
-| `<C-f>` / `<C-b>` | Scroll the active floating window   |
+| `<S-Enter>`       | Run command-line command in a split (`:` cmdline) |
+| `<C-f>` / `<C-b>` | Scroll the active floating window (`i` / `n` / `s`) |
+
+### Todo
+
+| Key          | Action            |
+| ------------ | ----------------- |
+| `<leader>st` | Todo comments     |
+| `[t` / `]t`  | Prev / next todo  |
 
 ### Motion
 
 | Key           | Action                         |
 | ------------- | ------------------------------ |
 | `s` / `S`     | Flash jump / treesitter select |
+| `r` / `R`     | Flash remote / treesitter search |
 | `]]` / `[[`   | Next / prev reference          |
-| `]m` / `[m`   | Next / prev function           |
-| `<C-h/j/k/l>` | Window navigation              |
+| `<C-s>`       | Toggle Flash search (cmdline)  |
 
 ## Customization
 
