@@ -17,7 +17,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
 })
 
 vim.pack.add({
-	-- Core (`plugins.core`)
+	-- Foundation
 	"https://github.com/echasnovski/mini.nvim",
 	"https://github.com/folke/snacks.nvim",
 
@@ -66,6 +66,23 @@ vim.cmd("packadd nvim.difftool")
 -- Work around Neovim 0.12 bug: MenuPopup assert error in vim/ui.lua _get_urls
 pcall(vim.api.nvim_clear_autocmds, { event = "MenuPopup", group = "nvim_defaults" })
 
+-- Foundational plugin setup
+-- These must be available before the broader UI module is loaded.
+require("mini.icons").setup({
+	file = {
+		[".keep"] = { glyph = "󰊢", hl = "MiniIconsGrey" },
+	},
+})
+
+package.preload["nvim-web-devicons"] = function()
+	require("mini.icons").mock_nvim_web_devicons()
+	return package.loaded["nvim-web-devicons"]
+end
+
+require("mini.pairs").setup()
+require("mini.surround").setup()
+require("mini.ai").setup()
+
 local helpers = {}
 
 -- Buffer state helpers
@@ -108,7 +125,7 @@ package.loaded["config.helpers"] = helpers
 require("config.options")
 require("config.keymaps")
 require("config.autocmds")
-require("plugins.core")
+-- make sure to load plugins.ui first!
 require("plugins.ui")
 require("plugins.lsp")
 require("plugins.dap")
