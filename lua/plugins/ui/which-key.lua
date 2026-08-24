@@ -19,6 +19,7 @@ require("which-key").setup({
 		{ "<leader>gh", group = "hunks", mode = { "n", "v" } },
 		{ "<leader>h", desc = "Cycle colorcolumn", mode = { "n", "v" } },
 		{ "<leader>q", group = "session", mode = { "n", "v" } },
+		{ "<leader>r", desc = "Open dashboard", mode = { "n", "v" } },
 		{ "<leader>s", group = "search", mode = { "n", "v" } },
 		{ "<leader>sn", group = "messages", mode = { "n", "v" } },
 		{ "<leader>st", desc = "Todo comments", mode = { "n", "v" } },
