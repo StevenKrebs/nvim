@@ -184,6 +184,7 @@ map("n", "<leader>bj", "<cmd>BufferLinePick<cr>", { desc = "Pick buffer" })
 map("n", "<leader>bl", "<cmd>BufferLineCloseLeft<cr>", { desc = "Delete buffers to the left" })
 map("n", "<leader>bp", "<cmd>BufferLineTogglePin<cr>", { desc = "Toggle pin" })
 map("n", "<leader>br", "<cmd>BufferLineCloseRight<cr>", { desc = "Delete buffers to the right" })
+map("n", "<leader>bD", "<cmd>%bd<cr>", { desc = "Delete all buffers" })
 map("n", "<leader>bP", "<cmd>BufferLineGroupClose ungrouped<cr>", { desc = "Delete non-pinned buffers" })
 
 map("n", "<leader>e", open_explorer, { desc = "File explorer" })

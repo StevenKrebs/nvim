@@ -131,6 +131,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | `<leader>bj`               | Pick buffer               |
 | `<leader>bl` / `<leader>br` | Delete buffers left / right |
 | `<leader>bp`               | Toggle pin                |
+| `<leader>bD`               | Delete all buffers        |
 | `<leader>bP`               | Delete non-pinned buffers |
 | `[b` / `]b`                | Prev / next buffer        |
 | `[B` / `]B`                | Move buffer prev / next   |
