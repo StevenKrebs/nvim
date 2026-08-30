@@ -74,6 +74,16 @@ require("mini.icons").setup({
 	},
 })
 
+local statuscolumn = require("mini.statuscolumn")
+statuscolumn.setup({
+	content = statuscolumn.gen_content.main({
+		{ fold = "%C", lnum = "%l", sign = "%s" },
+		{ format = "=lfs", sep = "" },
+		{ ltype = "virt", lnum = "•" },
+		{ ltype = "wrap", lnum = "↳" },
+	}),
+})
+
 package.preload["nvim-web-devicons"] = function()
 	require("mini.icons").mock_nvim_web_devicons()
 	return package.loaded["nvim-web-devicons"]
