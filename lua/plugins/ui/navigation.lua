@@ -113,6 +113,11 @@ end, { desc = "Flash toggle search" })
 
 local colorcolumn_cycle = { "", "72", "80", "100", "120" }
 
+local function set_colorcolumn(value)
+	vim.opt.colorcolumn = value
+	vim.opt.textwidth = tonumber(value) or 0
+end
+
 local function toggle_colorcolumn()
 	local current = vim.wo.colorcolumn
 	local next_index = 1
@@ -125,7 +130,7 @@ local function toggle_colorcolumn()
 	end
 
 	local next_value = colorcolumn_cycle[next_index]
-	vim.opt.colorcolumn = next_value
+	set_colorcolumn(next_value)
 
 	local label = next_value == "" and "off" or next_value
 	vim.notify("Colorcolumn: " .. label, vim.log.levels.INFO)
