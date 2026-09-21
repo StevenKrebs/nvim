@@ -97,5 +97,5 @@ end
 
 vim.api.nvim_create_user_command("PackUpdate", function()
 	vim.pack.update()
-	vim.notify("All plugins updated!", vim.log.levels.INFO)
-end, { desc = "Update all plugins" })
+	vim.notify("Plugin update review opened", vim.log.levels.INFO)
+end, { desc = "Review plugin updates" })
