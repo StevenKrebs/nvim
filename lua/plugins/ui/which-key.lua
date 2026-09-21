@@ -18,6 +18,7 @@ require("which-key").setup({
 		{ "<leader>g", group = "git", mode = { "n", "v" } },
 		{ "<leader>gh", group = "hunks", mode = { "n", "v" } },
 		{ "<leader>h", desc = "Cycle colorcolumn", mode = { "n", "v" } },
+		{ "<leader>m", desc = "Trigger manual format", mode = { "n", "v" } },
 		{ "<leader>q", group = "session", mode = { "n", "v" } },
 		{ "<leader>r", desc = "Open dashboard", mode = { "n", "v" } },
 		{ "<leader>s", group = "search", mode = { "n", "v" } },

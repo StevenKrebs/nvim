@@ -190,8 +190,13 @@ Git hunk shortcuts:
 | Key         | Action                                                                 |
 | ----------- | ---------------------------------------------------------------------- |
 | `<leader>h` | Cycle `colorcolumn`: `off` (default) -> `72` -> `80` -> `100` -> `120` |
+| `<leader>m` | Trigger manual format                                                 |
 | `<leader>u` | Undotree                                                               |
 | `<leader>?` | Buffer-local keymaps                                                   |
+
+Markdown buffers enable spell checking and text formatting while inheriting
+the shared `colorcolumn`/`textwidth` setting. The default remains off;
+`<leader>h` cycles both values together.
 
 ### Windows
 

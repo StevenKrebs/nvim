@@ -279,6 +279,10 @@ require("conform").setup({
 	},
 })
 
+vim.keymap.set({ "n", "x" }, "<leader>m", function()
+	require("conform").format({ async = true, lsp_format = "fallback" })
+end, { desc = "Trigger manual format" })
+
 require("lint").linters_by_ft = {
 	python = { "ruff" },
 	sh = { "shellcheck" },

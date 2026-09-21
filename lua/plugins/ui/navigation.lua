@@ -137,3 +137,7 @@ local function toggle_colorcolumn()
 end
 
 map("n", "<leader>h", toggle_colorcolumn, { desc = "Cycle colorcolumn" })
+
+return {
+	set_colorcolumn = set_colorcolumn,
+}
