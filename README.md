@@ -67,6 +67,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 ## Features
 
 - **Built-in plugin manager** — `vim.pack` with a lockfile (`nvim-pack-lock.json`) for reproducible installs
+- **Plugin update watcher** — vahti.nvim checks for available updates on every startup without applying them automatically
 - **Native LSP** — Neovim 0.12 APIs, no nvim-lspconfig; per-server configs in `lsp/`, 21 language servers, inlay hints, breadcrumb navigation
 - **blink.cmp** — ghost text completion with Tab cycling, doc popups, muted Kanagawa theme
 - **Terminal-first workflow** — external tools stay in terminal splits instead of editor-specific plugins
@@ -116,6 +117,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | `which-key.nvim`           | Keymap discovery                                                            |
 | `todo-comments.nvim`       | TODO/FIXME highlighting and navigation                                      |
 | `trouble.nvim`             | Diagnostics, quickfix, and location list UI                                 |
+| `vahti.nvim`               | Background update checks for `vim.pack` plugins                              |
 | `nvim.undotree`            | Built-in optional undo history viewer                                       |
 | `nvim.difftool`            | Built-in optional diff helper                                               |
 
@@ -187,7 +189,7 @@ Git hunk shortcuts:
 
 | Key         | Action                                                                 |
 | ----------- | ---------------------------------------------------------------------- |
-| `<leader>h` | Cycle `colorcolumn`: `off` -> `72` -> `80` -> `100` (default) -> `120` |
+| `<leader>h` | Cycle `colorcolumn`: `off` (default) -> `72` -> `80` -> `100` -> `120` |
 | `<leader>u` | Undotree                                                               |
 | `<leader>?` | Buffer-local keymaps                                                   |
 
@@ -203,6 +205,8 @@ Git hunk shortcuts:
 
 The Snacks dashboard is the startup screen. It shows a custom header, grouped actions, recent files, detected projects, and the current Neovim version in the footer.
 
+Vahti checks plugin remotes five seconds after every startup. It never updates plugins automatically. Use `:VahtiCheck` to check immediately, then `:PackUpdate` or `:lua vim.pack.update()` to review and apply available updates. In the dashboard, `u` checks for updates and `U` opens the update review. If the startup check is still running, a follow-up check reports that it is already in progress.
+
 | Key | Action          |
 | --- | --------------- |
 | `n` | New file        |
@@ -212,7 +216,8 @@ The Snacks dashboard is the startup screen. It shows a custom header, grouped ac
 | `l` | Last session    |
 | `s` | Select session  |
 | `c` | Browse config   |
-| `u` | Update plugins  |
+| `u` | Check plugin updates |
+| `U` | Review plugin updates |
 | `q` | Quit            |
 
 Dashboard session actions use the default `persistence.nvim` behavior:

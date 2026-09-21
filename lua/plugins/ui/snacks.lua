@@ -7,6 +7,11 @@ require("snacks").setup({
 		top_down = false,
 		margin = { top = 0, right = 1, bottom = 1 },
 	},
+	styles = {
+		notification = {
+			wo = { wrap = true, linebreak = true },
+		},
+	},
 	dashboard = {
 		sections = {
 			{ section = "header" },
@@ -43,7 +48,8 @@ require("snacks").setup({
 					desc = "Config",
 					action = ":lua Snacks.picker.files({ cwd = vim.fn.stdpath('config') })",
 				},
-				{ icon = " ", key = "u", desc = "Update Plugins", action = ":PackUpdate" },
+				{ icon = " ", key = "u", desc = "Check Plugin Updates", action = ":VahtiCheck" },
+				{ icon = " ", key = "U", desc = "Review Plugin Updates", action = ":PackUpdate" },
 				{ icon = " ", key = "q", desc = "Quit", action = ":qa" },
 			},
 			{ title = "Recent Files", section = "recent_files", padding = 2 },

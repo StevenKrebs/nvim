@@ -20,6 +20,7 @@ vim.pack.add({
 	-- Foundation
 	"https://github.com/echasnovski/mini.nvim",
 	"https://github.com/folke/snacks.nvim",
+	{ src = "https://github.com/okram78/vahti.nvim", version = vim.version.range("0.1") },
 
 	-- UI (`plugins.ui`)
 	"https://github.com/lewis6991/gitsigns.nvim",
@@ -59,6 +60,18 @@ vim.pack.add({
 	"https://github.com/rouge8/neotest-rust",
 	"https://github.com/marilari88/neotest-vitest",
 })
+
+require("vahti").setup({
+	startup_delay = 5000,
+	check_interval = 0,
+})
+
+vim.api.nvim_create_user_command("VahtiCheck", function()
+	local started = require("vahti").check(true)
+	if not started then
+		vim.notify("A plugin update check is already in progress.", vim.log.levels.WARN, { title = "vahti.nvim" })
+	end
+end, { desc = "Check vim.pack plugins for updates", force = true })
 
 vim.cmd("packadd nvim.undotree")
 vim.cmd("packadd nvim.difftool")
