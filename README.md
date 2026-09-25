@@ -1,5 +1,3 @@
-# One-File Neovim Config
-
 With the release of nvim v.0.12 I decided to explore what it means to run a custom nvim config instead of my usual reliance on community distributions.
 This repo is the outcome of my efforts. A single init.lua that manages everything, heavily inspired by [LazyVim](https://www.lazyvim.org/).
 
