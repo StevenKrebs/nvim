@@ -36,6 +36,7 @@ vim.pack.add({
 	"https://github.com/folke/todo-comments.nvim",
 	"https://github.com/folke/trouble.nvim",
 	"https://github.com/tpope/vim-fugitive",
+	"https://github.com/willfish/herdr-navigator.nvim",
 
 	-- LSP / completion / syntax (`plugins.lsp`)
 	{ src = "https://github.com/Saghen/blink.lib", version = "main" },
@@ -149,6 +150,7 @@ package.loaded["config.helpers"] = helpers
 
 require("config.options")
 require("config.keymaps")
+require("herdr-navigator").setup()
 require("config.autocmds")
 -- make sure to load plugins.ui first!
 require("plugins.ui")

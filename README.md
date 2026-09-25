@@ -16,7 +16,7 @@ This repo is the outcome of my efforts. A single init.lua that manages everythin
 ### Optional
 
 I personally use [ghostty](https://ghostty.org) as my terminal emulator of choice, combined with
-[zsh](https://www.zsh.org/), [starship](https://starship.rs/) and [herdr](https://herdr.dev/) for a modern shell experience. These are not required to use the nvim config, but they do complement it nicely.
+[zsh](https://www.zsh.org/), [starship](https://starship.rs/) and [herdr](https://herdr.dev/) for a modern shell experience. These are not required to use the nvim config, but they do complement it nicely. When Neovim runs inside Herdr, `herdr-navigator.nvim` makes Option+h/j/k/l move across Neovim splits and hand off to neighboring Herdr panes at split edges.
 
 External coding assistants are optional and kept outside the editor plugin graph. I use them in terminal splits instead of Neovim-specific integrations.
 
@@ -204,6 +204,7 @@ the shared `colorcolumn`/`textwidth` setting. The default remains off;
 
 | Key           | Action             |
 | ------------- | ------------------ |
+| `<M-h/j/k/l>` | Move across Neovim splits; at an edge, focus the adjacent Herdr pane (inside Herdr) |
 | `<C-h/j/k/l>` | Move across splits |
 | `<C-w>q`      | Quit window        |
 | `<leader>wq`  | Quit window        |

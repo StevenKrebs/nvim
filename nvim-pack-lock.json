@@ -38,6 +38,10 @@
       "rev": "070a5d7b985546cc57e1fc61e5bc507fecac6045",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
+    "herdr-navigator.nvim": {
+      "rev": "e6b05e6f99b4f99df42cd7e78ae33a066351138d",
+      "src": "https://github.com/willfish/herdr-navigator.nvim"
+    },
     "kanagawa.nvim": {
       "rev": "bb85e4bfc8d89b0e62c8fa53ccdd13d12e2f77b3",
       "src": "https://github.com/rebelot/kanagawa.nvim"
