@@ -16,7 +16,7 @@ This repo is the outcome of my efforts. A single init.lua that manages everythin
 ### Optional
 
 I personally use [ghostty](https://ghostty.org) as my terminal emulator of choice, combined with
-[zsh](https://www.zsh.org/) and [starship](https://starship.rs/) for a modern shell experience. These are not required to use the nvim config, but they do complement it nicely.
+[zsh](https://www.zsh.org/), [starship](https://starship.rs/) and [herdr](https://herdr.dev/) for a modern shell experience. These are not required to use the nvim config, but they do complement it nicely.
 
 External coding assistants are optional and kept outside the editor plugin graph. I use them in terminal splits instead of Neovim-specific integrations.
 
@@ -83,43 +83,45 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 
 ## Plugins
 
-| Plugin                     | Purpose in this config                                                      |
-| -------------------------- | --------------------------------------------------------------------------- |
-| `mini.nvim`                | Icons mock for plugin compatibility, plus pairs, surround, and text objects |
-| `snacks.nvim`              | Dashboard, picker, explorer, notifier, git helpers, lazygit, and indent UI  |
-| `blink.cmp`                | Completion engine with ghost text and documentation popups                  |
-| `conform.nvim`             | Format-on-save and manual formatting                                        |
-| `nvim-lint`                | External linter integration                                                 |
-| `plenary.nvim`             | Async/job dependency used by neotest                                        |
-| `nvim-treesitter`          | Syntax highlighting and parser-backed editing                               |
-| `nvim-treesitter-textobjects` | Treesitter text objects and parameter swapping                           |
-| `gitsigns.nvim`            | Inline git hunks and hunk actions                                           |
-| `Comment.nvim`             | Comment toggling                                                            |
-| `vim-fugitive`             | Git commands and diff workflow                                              |
-| `persistence.nvim`         | Session save and restore                                                    |
-| `nvim-dap`                | Core debug adapter protocol support                                         |
-| `nvim-nio`                | Async dependency for DAP UI                                                 |
-| `nvim-dap-ui`             | Debug panels and controls                                                   |
-| `nvim-dap-virtual-text`   | Inline variable values while debugging                                      |
-| `FixCursorHold.nvim`       | CursorHold timing fix required by neotest                                   |
-| `neotest`                  | Editor-native test runner UI                                                |
-| `neotest-python`           | Python test adapter (pytest / unittest)                                     |
-| `neotest-rust`             | Rust test adapter                                                           |
-| `neotest-jest`             | Jest adapter for JS / TS projects                                           |
-| `neotest-vitest`           | Vitest adapter for JS / TS projects                                         |
-| `kanagawa.nvim`            | Colorscheme                                                                 |
-| `bufferline.nvim`          | Buffer tabs                                                                 |
-| `lualine.nvim`             | Statusline                                                                  |
-| `nvim-navic`               | LSP breadcrumbs in the statusline                                           |
-| `vim-illuminate`           | Repeated symbol highlighting                                                |
-| `render-markdown.nvim`     | Rich markdown rendering                                                     |
-| `flash.nvim`               | Fast jump motion and treesitter selection                                   |
-| `which-key.nvim`           | Keymap discovery                                                            |
-| `todo-comments.nvim`       | TODO/FIXME highlighting and navigation                                      |
-| `trouble.nvim`             | Diagnostics, quickfix, and location list UI                                 |
-| `vahti.nvim`               | Background update checks for `vim.pack` plugins                              |
-| `nvim.undotree`            | Built-in optional undo history viewer                                       |
-| `nvim.difftool`            | Built-in optional diff helper                                               |
+| Plugin                        | Purpose in this config                                                      |
+| ----------------------------- | --------------------------------------------------------------------------- |
+| `mini.nvim`                   | Icons mock for plugin compatibility, plus pairs, surround, and text objects |
+| `snacks.nvim`                 | Dashboard, picker, explorer, notifier, git helpers, lazygit, and indent UI  |
+| `blink.lib`                   | Shared utility library required by `blink.cmp` v2                           |
+| `blink.cmp`                   | Completion engine with ghost text and documentation popups                  |
+| `conform.nvim`                | Format-on-save and manual formatting                                        |
+| `nvim-lint`                   | External linter integration                                                 |
+| `plenary.nvim`                | Async/job dependency used by neotest                                        |
+| `nvim-treesitter`             | Syntax highlighting and parser-backed editing                               |
+| `nvim-treesitter-textobjects` | Treesitter text objects and parameter swapping                              |
+| `gitsigns.nvim`               | Inline git hunks and hunk actions                                           |
+| `Comment.nvim`                | Comment toggling                                                            |
+| `vim-fugitive`                | Git commands and diff workflow                                              |
+| `persistence.nvim`            | Session save and restore                                                    |
+| `nvim-dap`                    | Core debug adapter protocol support                                         |
+| `autodap.nvim`                | Project-aware debug configurations for Node, Python, and C/C++               |
+| `nvim-nio`                    | Async dependency for DAP UI                                                 |
+| `nvim-dap-ui`                 | Debug panels and controls                                                   |
+| `nvim-dap-virtual-text`       | Inline variable values while debugging                                      |
+| `FixCursorHold.nvim`          | CursorHold timing fix required by neotest                                   |
+| `neotest`                     | Editor-native test runner UI                                                |
+| `neotest-python`              | Python test adapter (pytest / unittest)                                     |
+| `neotest-rust`                | Rust test adapter                                                           |
+| `neotest-jest`                | Jest adapter for JS / TS projects                                           |
+| `neotest-vitest`              | Vitest adapter for JS / TS projects                                         |
+| `kanagawa.nvim`               | Colorscheme                                                                 |
+| `bufferline.nvim`             | Buffer tabs                                                                 |
+| `lualine.nvim`                | Statusline                                                                  |
+| `nvim-navic`                  | LSP breadcrumbs in the statusline                                           |
+| `vim-illuminate`              | Repeated symbol highlighting                                                |
+| `render-markdown.nvim`        | Rich markdown rendering                                                     |
+| `flash.nvim`                  | Fast jump motion and treesitter selection                                   |
+| `which-key.nvim`              | Keymap discovery                                                            |
+| `todo-comments.nvim`          | TODO/FIXME highlighting and navigation                                      |
+| `trouble.nvim`                | Diagnostics, quickfix, and location list UI                                 |
+| `vahti.nvim`                  | Background update checks for `vim.pack` plugins                             |
+| `nvim.undotree`               | Built-in optional undo history viewer                                       |
+| `nvim.difftool`               | Built-in optional diff helper                                               |
 
 ## Key Bindings
 
@@ -127,17 +129,17 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 
 ### Buffers (`<leader>b` / `[b`)
 
-| Key                        | Action                    |
-| -------------------------- | ------------------------- |
-| `<leader>bd`               | Delete current buffer     |
-| `<leader>bj`               | Pick buffer               |
+| Key                         | Action                      |
+| --------------------------- | --------------------------- |
+| `<leader>bd`                | Delete current buffer       |
+| `<leader>bj`                | Pick buffer                 |
 | `<leader>bl` / `<leader>br` | Delete buffers left / right |
-| `<leader>bp`               | Toggle pin                |
-| `<leader>bD`               | Delete all buffers        |
-| `<leader>bP`               | Delete non-pinned buffers |
-| `[b` / `]b`                | Prev / next buffer        |
-| `[B` / `]B`                | Move buffer prev / next   |
-| `<S-h>` / `<S-l>`          | Prev / next buffer        |
+| `<leader>bp`                | Toggle pin                  |
+| `<leader>bD`                | Delete all buffers          |
+| `<leader>bP`                | Delete non-pinned buffers   |
+| `[b` / `]b`                 | Prev / next buffer          |
+| `[B` / `]B`                 | Move buffer prev / next     |
+| `<S-h>` / `<S-l>`           | Prev / next buffer          |
 
 ### Find (`<leader>f`)
 
@@ -160,24 +162,24 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | `<leader>gb` / `<leader>gf` | Git blame / file history |
 | `<leader>gB` / `<leader>gY` | Browse (open / copy URL) |
 | `<leader>gc` / `<leader>gd` | Fugitive commit / diff   |
-| `<leader>gD`               | Git diff split           |
-| `<leader>gt`               | Diff tool                |
-| `<leader>gw`               | Git write (stage)        |
+| `<leader>gD`                | Git diff split           |
+| `<leader>gt`                | Diff tool                |
+| `<leader>gw`                | Git write (stage)        |
 
 Git hunk shortcuts:
 
-| Key                         | Action                       |
-| --------------------------- | ---------------------------- |
-| `]h` / `[h`                 | Next / prev hunk             |
-| `]H` / `[H`                 | Last / first hunk            |
-| `<leader>ghb`               | Blame line                   |
-| `<leader>ghd`               | Diff this                    |
-| `<leader>ghp`               | Preview hunk                 |
-| `<leader>ghr` / `<leader>ghs` | Reset / stage hunk         |
-| `<leader>ghu`               | Undo stage hunk              |
-| `<leader>ghD`               | Diff this against `~`        |
-| `<leader>ghR` / `<leader>ghS` | Reset / stage buffer       |
-| `ih`                        | Select hunk text object      |
+| Key                           | Action                  |
+| ----------------------------- | ----------------------- |
+| `]h` / `[h`                   | Next / prev hunk        |
+| `]H` / `[H`                   | Last / first hunk       |
+| `<leader>ghb`                 | Blame line              |
+| `<leader>ghd`                 | Diff this               |
+| `<leader>ghp`                 | Preview hunk            |
+| `<leader>ghr` / `<leader>ghs` | Reset / stage hunk      |
+| `<leader>ghu`                 | Undo stage hunk         |
+| `<leader>ghD`                 | Diff this against `~`   |
+| `<leader>ghR` / `<leader>ghS` | Reset / stage buffer    |
+| `ih`                          | Select hunk text object |
 
 ### Terminal
 
@@ -190,7 +192,7 @@ Git hunk shortcuts:
 | Key         | Action                                                                 |
 | ----------- | ---------------------------------------------------------------------- |
 | `<leader>h` | Cycle `colorcolumn`: `off` (default) -> `72` -> `80` -> `100` -> `120` |
-| `<leader>m` | Trigger manual format                                                 |
+| `<leader>m` | Trigger manual format                                                  |
 | `<leader>u` | Undotree                                                               |
 | `<leader>?` | Buffer-local keymaps                                                   |
 
@@ -200,11 +202,11 @@ the shared `colorcolumn`/`textwidth` setting. The default remains off;
 
 ### Windows
 
-| Key             | Action             |
-| --------------- | ------------------ |
-| `<C-h/j/k/l>`   | Move across splits |
-| `<C-w>q`        | Quit window        |
-| `<leader>wq`    | Quit window        |
+| Key           | Action             |
+| ------------- | ------------------ |
+| `<C-h/j/k/l>` | Move across splits |
+| `<C-w>q`      | Quit window        |
+| `<leader>wq`  | Quit window        |
 
 ### Dashboard
 
@@ -212,20 +214,21 @@ The Snacks dashboard is the startup screen. It shows a custom header, grouped ac
 
 Vahti checks plugin remotes five seconds after every startup. It never updates plugins automatically. Use `:VahtiCheck` to check immediately, then `:PackUpdate` or `:lua vim.pack.update()` to review and apply available updates. In the dashboard, `u` checks for updates and `U` opens the update review. If the startup check is still running, a follow-up check reports that it is already in progress.
 
-| Key | Action          |
-| --- | --------------- |
-| `n` | New file        |
-| `f` | Find file       |
-| `g` | Find text       |
-| `r` | Restore session |
-| `l` | Last session    |
-| `s` | Select session  |
-| `c` | Browse config   |
-| `u` | Check plugin updates |
+| Key | Action                |
+| --- | --------------------- |
+| `n` | New file              |
+| `f` | Find file             |
+| `g` | Find text             |
+| `r` | Restore session       |
+| `l` | Last session          |
+| `s` | Select session        |
+| `c` | Browse config         |
+| `u` | Check plugin updates  |
 | `U` | Review plugin updates |
-| `q` | Quit            |
+| `q` | Quit                  |
 
 Dashboard session actions use the default `persistence.nvim` behavior:
+
 - `r` restores the session for the current working directory, using branch-aware session files when available.
 - `l` restores the most recently saved session overall.
 - `s` opens `persistence.nvim`'s built-in session chooser.
@@ -250,19 +253,19 @@ Dashboard session actions use the default `persistence.nvim` behavior:
 
 ### Code (`<leader>c` / LSP)
 
-| Key          | Action                 |
-| ------------ | ---------------------- |
-| `<leader>ca` | Code action            |
+| Key          | Action                       |
+| ------------ | ---------------------------- |
+| `<leader>ca` | Code action                  |
 | `<leader>cl` | LSP definitions / references |
-| `<leader>cr` | Rename symbol          |
-| `<leader>cs` | Symbols                |
-| `gd`         | Go to definition       |
-| `gD`         | Go to declaration      |
-| `gr`         | References             |
-| `gi`         | Implementation         |
-| `gy`         | Type definition        |
-| `K`          | Hover docs             |
-| `[d` / `]d`  | Prev / next diagnostic |
+| `<leader>cr` | Rename symbol                |
+| `<leader>cs` | Symbols                      |
+| `gd`         | Go to definition             |
+| `gD`         | Go to declaration            |
+| `gr`         | References                   |
+| `gi`         | Implementation               |
+| `gy`         | Type definition              |
+| `K`          | Hover docs                   |
+| `[d` / `]d`  | Prev / next diagnostic       |
 
 ### Debug (`<leader>d`)
 
@@ -291,17 +294,17 @@ Requires `js-debug` (`vscode-js-debug`) on PATH. Sourcemaps are enabled — stac
 
 Neotest is configured for Python, Rust, Jest, and Vitest. Rust runs use `cargo-nextest`. Debug runs reuse `nvim-dap` when the active adapter supports it.
 
-| Key          | Action                   |
-| ------------ | ------------------------ |
-| `<leader>ta` | Attach to test           |
-| `<leader>td` | Debug nearest test       |
-| `<leader>tf` | Run file tests           |
-| `<leader>tn` | Run nearest test         |
-| `<leader>to` | Open test output         |
-| `<leader>tO` | Toggle output panel      |
-| `<leader>tr` | Run project tests        |
-| `<leader>ts` | Toggle summary           |
-| `<leader>tx` | Stop tests               |
+| Key          | Action              |
+| ------------ | ------------------- |
+| `<leader>ta` | Attach to test      |
+| `<leader>td` | Debug nearest test  |
+| `<leader>tf` | Run file tests      |
+| `<leader>tn` | Run nearest test    |
+| `<leader>to` | Open test output    |
+| `<leader>tO` | Toggle output panel |
+| `<leader>tr` | Run project tests   |
+| `<leader>ts` | Toggle summary      |
+| `<leader>tx` | Stop tests          |
 
 ### Diagnostics (`<leader>x`)
 
@@ -313,30 +316,30 @@ Neotest is configured for Python, Rust, Jest, and Vitest. Rust runs use `cargo-n
 
 ### Messages (`<leader>sn`)
 
-| Key               | Action                              |
-| ----------------- | ----------------------------------- |
-| `<leader>snl`     | Last editor message                 |
-| `<leader>snh`     | Message history                     |
-| `<leader>sna`     | Messages + notification history     |
-| `<leader>snd`     | Dismiss active notifications        |
-| `<S-Enter>`       | Run command-line command in a split (`:` cmdline) |
+| Key               | Action                                              |
+| ----------------- | --------------------------------------------------- |
+| `<leader>snl`     | Last editor message                                 |
+| `<leader>snh`     | Message history                                     |
+| `<leader>sna`     | Messages + notification history                     |
+| `<leader>snd`     | Dismiss active notifications                        |
+| `<S-Enter>`       | Run command-line command in a split (`:` cmdline)   |
 | `<C-f>` / `<C-b>` | Scroll the active floating window (`i` / `n` / `s`) |
 
 ### Todo
 
-| Key          | Action            |
-| ------------ | ----------------- |
-| `<leader>st` | Todo comments     |
-| `[t` / `]t`  | Prev / next todo  |
+| Key          | Action           |
+| ------------ | ---------------- |
+| `<leader>st` | Todo comments    |
+| `[t` / `]t`  | Prev / next todo |
 
 ### Motion
 
-| Key           | Action                         |
-| ------------- | ------------------------------ |
-| `s` / `S`     | Flash jump / treesitter select |
-| `r` / `R`     | Flash remote / treesitter search |
-| `]]` / `[[`   | Next / prev reference          |
-| `<C-s>`       | Toggle Flash search (cmdline)  |
+| Key         | Action                           |
+| ----------- | -------------------------------- |
+| `s` / `S`   | Flash jump / treesitter select   |
+| `r` / `R`   | Flash remote / treesitter search |
+| `]]` / `[[` | Next / prev reference            |
+| `<C-s>`     | Toggle Flash search (cmdline)    |
 
 ## Customization
 

@@ -2,6 +2,8 @@ local dap = require("dap")
 local dapui = require("dapui")
 local map = vim.keymap.set
 
+require("autodap").setup()
+
 local function executable(path)
 	return path ~= nil and path ~= "" and vim.fn.executable(path) == 1
 end

@@ -38,7 +38,8 @@ vim.pack.add({
 	"https://github.com/tpope/vim-fugitive",
 
 	-- LSP / completion / syntax (`plugins.lsp`)
-	{ src = "https://github.com/Saghen/blink.cmp", version = vim.version.range("1") },
+	{ src = "https://github.com/Saghen/blink.lib", version = "main" },
+	{ src = "https://github.com/Saghen/blink.cmp", version = "main" },
 	"https://github.com/SmiteshP/nvim-navic",
 	"https://github.com/stevearc/conform.nvim",
 	"https://github.com/mfussenegger/nvim-lint",
@@ -48,6 +49,7 @@ vim.pack.add({
 
 	-- Debug (`plugins.dap`)
 	"https://github.com/mfussenegger/nvim-dap",
+	"https://github.com/JarnDev/autodap.nvim",
 	"https://github.com/nvim-neotest/nvim-nio",
 	"https://github.com/rcarriga/nvim-dap-ui",
 	"https://github.com/theHamsta/nvim-dap-virtual-text",
