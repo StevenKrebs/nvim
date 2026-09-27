@@ -1,4 +1,4 @@
-# One-File Neovim Config
+# A modern and simplistic neovim config
 
 With the release of nvim v.0.12 I decided to explore what it means to run a custom nvim config instead of my usual reliance on community distributions.
 This repo is the outcome of my efforts. A single init.lua that manages everything, heavily inspired by [LazyVim](https://www.lazyvim.org/).
@@ -16,7 +16,7 @@ This repo is the outcome of my efforts. A single init.lua that manages everythin
 ### Optional
 
 I personally use [ghostty](https://ghostty.org) as my terminal emulator of choice, combined with
-[zsh](https://www.zsh.org/), [starship](https://starship.rs/) and [herdr](https://herdr.dev/) for a modern shell experience. These are not required to use the nvim config, but they do complement it nicely. When Neovim runs inside Herdr, `herdr-navigator.nvim` makes Option+h/j/k/l move across Neovim splits and hand off to neighboring Herdr panes at split edges.
+[zsh](https://www.zsh.org/), [starship](https://starship.rs/) and [herdr](https://herdr.dev/) for a modern shell experience. These are not required to use the nvim config, but they do complement it nicely. When Neovim runs inside Herdr, `herdr-navigator.nvim` makes Ctrl+h/j/k/l move across Neovim splits and hand off to neighboring Herdr panes at split edges.
 
 External coding assistants are optional and kept outside the editor plugin graph. I use them in terminal splits instead of Neovim-specific integrations.
 
@@ -99,7 +99,7 @@ Plugins are fetched automatically via `vim.pack` on first launch. Treesitter par
 | `vim-fugitive`                | Git commands and diff workflow                                              |
 | `persistence.nvim`            | Session save and restore                                                    |
 | `nvim-dap`                    | Core debug adapter protocol support                                         |
-| `autodap.nvim`                | Project-aware debug configurations for Node, Python, and C/C++               |
+| `autodap.nvim`                | Project-aware debug configurations for Node, Python, and C/C++              |
 | `nvim-nio`                    | Async dependency for DAP UI                                                 |
 | `nvim-dap-ui`                 | Debug panels and controls                                                   |
 | `nvim-dap-virtual-text`       | Inline variable values while debugging                                      |
@@ -202,12 +202,11 @@ the shared `colorcolumn`/`textwidth` setting. The default remains off;
 
 ### Windows
 
-| Key           | Action             |
-| ------------- | ------------------ |
-| `<M-h/j/k/l>` | Move across Neovim splits; at an edge, focus the adjacent Herdr pane (inside Herdr) |
-| `<C-h/j/k/l>` | Move across splits |
-| `<C-w>q`      | Quit window        |
-| `<leader>wq`  | Quit window        |
+| Key           | Action                                                                              |
+| ------------- | ----------------------------------------------------------------------------------- |
+| `<C-h/j/k/l>` | Move across Neovim splits; at an edge, focus the adjacent Herdr pane (inside Herdr) |
+| `<C-w>q`      | Quit window                                                                         |
+| `<leader>wq`  | Quit window                                                                         |
 
 ### Dashboard
 
