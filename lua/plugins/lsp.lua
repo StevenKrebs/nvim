@@ -90,7 +90,7 @@ require("blink.cmp").setup({
 		list = { selection = { preselect = true, auto_insert = false } },
 		documentation = { auto_show = true, auto_show_delay_ms = 200 },
 	},
-	fuzzy = { implementation = "rust" },
+	fuzzy = { implementation = "lua" },
 })
 
 vim.api.nvim_create_autocmd("ColorScheme", {
