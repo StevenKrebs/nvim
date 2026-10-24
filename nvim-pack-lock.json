@@ -35,7 +35,7 @@
       "src": "https://github.com/folke/flash.nvim"
     },
     "gitsigns.nvim": {
-      "rev": "fd780920613e541cbdfac41bf711583ed49f9249",
+      "rev": "683137003522aebd6948358334164a6ba2ca7cd5",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "herdr-navigator.nvim": {
@@ -51,7 +51,7 @@
       "src": "https://github.com/nvim-lualine/lualine.nvim"
     },
     "mini.nvim": {
-      "rev": "4d84086ab334a88201b803d11d1086406fe7e43d",
+      "rev": "acfc3b2702126209201ca8b38a105294fa2c1ddd",
       "src": "https://github.com/echasnovski/mini.nvim"
     },
     "neotest": {
