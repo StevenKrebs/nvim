@@ -31,7 +31,7 @@ LSP servers must be installed manually (e.g. via Nix). Formatters and linters ar
 | Nix               | `nixfmt`       | `statix`     | `nixd`                                                                   |
 | Python            | `ruff`         | `ruff`       | `basedpyright`                                                           |
 | Lua               | `stylua`       | —            | `lua-language-server`                                                    |
-| Shell             | `shfmt`        | `shellcheck` | —                                                                        |
+| Shell             | `shfmt`        | `shellcheck` | `shell-lsp` (Bash, Zsh, POSIX sh, Dash, Ksh)                               |
 | Rust              | —              | —            | `rust-analyzer`                                                          |
 | Go                | —              | —            | `gopls`                                                                  |
 | JS/TS             | `prettier`     | —            | `typescript-language-server`                                             |
@@ -46,6 +46,14 @@ LSP servers must be installed manually (e.g. via Nix). Formatters and linters ar
 | Java              | —              | —            | `jdtls`                                                                  |
 | Zig               | `zig fmt`      | —            | `zls`                                                                    |
 | Dockerfile        | —              | —            | `dockerfile-language-server`                                             |
+
+Shell LSP is installed from the upstream
+[`stubbedev/shell-lsp`](https://github.com/stubbedev/shell-lsp) flake's `main`
+branch. `flake.lock` pins the installed commit; `nixupdate` advances it.
+It attaches only to shell buffers; existing Nix and Dockerfile servers stay in use.
+`shfmt` remains the formatter for `sh` buffers; other shell buffers use LSP
+formatting through Conform's fallback. Shell LSP also provides diagnostics, which
+can overlap with the existing `shellcheck` linter for `sh` buffers.
 
 ### DAP
 

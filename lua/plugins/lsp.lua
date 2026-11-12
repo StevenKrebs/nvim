@@ -149,6 +149,7 @@ vim.lsp.config("*", {
 
 vim.lsp.enable({
 	"nixd",
+	"shell_lsp",
 	"basedpyright",
 	"rust_analyzer",
 	"gopls",
