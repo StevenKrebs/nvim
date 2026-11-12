@@ -319,6 +319,8 @@ require("nvim-treesitter").install({
 	"perl",
 	"sql",
 	"markdown",
+	"latex",
+	"regex",
 	"dockerfile",
 	"vim",
 	"zig",

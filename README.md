@@ -40,7 +40,7 @@ LSP servers must be installed manually (e.g. via Nix). Formatters and linters ar
 | TOML              | `taplo`        | —            | `taplo`                                                                  |
 | C/C++             | `clang-format` | —            | `clangd`                                                                 |
 | Ruby              | `rubocop`      | `rubocop`    | `ruby-lsp`                                                               |
-| Perl              | `perltidy`     | `perlcritic` | `perlls`                                                                 |
+| Perl              | `perltidy`     | `perlcritic` | `pls` (PLS, configured as `perlls`)                                        |
 | PHP               | —              | —            | `intelephense`                                                           |
 | SQL               | —              | —            | `sqls`                                                                   |
 | Java              | —              | —            | `jdtls`                                                                  |

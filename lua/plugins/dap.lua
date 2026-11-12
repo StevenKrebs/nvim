@@ -2,8 +2,6 @@ local dap = require("dap")
 local dapui = require("dapui")
 local map = vim.keymap.set
 
-require("autodap").setup()
-
 local function executable(path)
 	return path ~= nil and path ~= "" and vim.fn.executable(path) == 1
 end
@@ -99,6 +97,9 @@ dap.adapters.python = function(callback)
 		vim.log.levels.ERROR
 	)
 end
+
+-- Register custom adapters first so Autodap leaves them under our control.
+require("autodap").setup({ auto_install = false })
 
 -- JavaScript / TypeScript launch profiles
 -- Share the same adapter setup across JS, TS, and React variants.

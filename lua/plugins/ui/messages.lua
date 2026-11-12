@@ -217,7 +217,6 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 
 map("c", "<S-Enter>", message_ui.redirect_cmdline, { expr = true, desc = "Redirect cmdline" })
 
-map("n", "<leader>sn", "", { desc = "+messages" })
 map("n", "<leader>sna", function()
 	message_ui.show_all()
 end, { desc = "All" })
